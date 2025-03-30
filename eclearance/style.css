@@ -1,0 +1,246 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background: #E1E9FF;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(135deg, #343079, #6b21a8);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: space-between;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.logo-text h2 {
+    font-size: 16px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.logo-text p {
+    font-size: 14px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar ul {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.sidebar ul li a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.logout {
+    margin-top: auto;
+}
+
+/* Container */
+.container {
+    background: #F8F8F8; /* Keep the background clean and professional */
+    padding: 20px; /* Maintain adequate spacing */
+    border-radius: 10px; /* Soft rounded corners for a modern look */
+    flex: 1; /* Ensure it takes up available space */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Consistent spacing between child elements */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border: 1px solid #e0e0e0; /* Light border for definition */
+    max-width: 1800px; /* Optional: Limit width for better readability */
+    margin: 0 auto; /* Center the container horizontally */
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+.container:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* User Panel */
+.user-panel {
+    background: white;
+    padding: 50px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.user-panel h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #6b21a8;
+    outline: none;
+    box-shadow: 0 0 5px rgba(107, 33, 168, 0.5);
+}
+
+.form-group input[readonly] {
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    margin-top: 10px; /* Adds space between the input fields and buttons */
+    padding: 8px 16px; /* Makes buttons more clickable */
+    display: flex; /* Ensures buttons are on a new line */
+    width: 100%; /* Matches input field width */
+}
+
+.form-buttons button {
+    background: linear-gradient(135deg, #4f46e5, #6b21a8);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.form-buttons button:hover {
+    opacity: 0.9;
+}
+
+.form-buttons button[type="submit"][name="delete_user"] {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+}
+
+/* User List Table */
+.user-list-container {
+    background: white;
+    overflow: hidden;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 2000px;
+    margin: 0 auto;
+}
+
+.user-list-container h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+table {
+
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    width: calc(100% - 40px); /* Adjust width to fit inside padding */
+    margin: 0 auto; /* Center the table */
+
+}
+
+thead {
+    background: rgb(36, 33, 50);
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    text-transform: uppercase;
+}
+
+td button {
+    background: #4f46e5;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+td button:hover {
+    opacity: 0.9;
+}
