@@ -152,16 +152,23 @@ if (isset($_POST['delete_user'])) {
         </div>
     </div>
     <ul>
-    <li><a href="dashboard.php"><i class="icon-home"></i> Home</a></li>
-        <li class="active"><a href="staff_management.php"><i class="icon-users"></i> Staff Management</a></li>
+        <li><a href="dashboard.php"><i class="icon-home"></i> Home</a></li>
+        <li><a href="staff_management.php"><i class="icon-users"></i> Staff Management</a></li>
         <li><a href="eclearance.php"><i class="icon-doc"></i> E-Clearance</a></li>
         <li><a href="program_section.php"><i class="icon-grid"></i> Program & Section</a></li>
         <li><a href="ay_semester.php"><i class="icon-calendar"></i> AY & Semester</a></li>
-        <li><a href="student_management.php"><i class="icon-user"></i> Student Management</a></li>
+        <li class="active"><a href="student_management.php"><i class="icon-user"></i> Student Management</a></li>
         <li class="logout"><a href="logout.php"><i class="icon-logout"></i> Logout</a></li>
     </ul>
 </nav>
+
 <div class="container">
+    <?php if (!empty($message)): ?>
+        <div class="message <?php echo $message_type; ?>">
+            <?php echo $message; ?>
+        </div>
+    <?php endif; ?>
+    
     <div class="user-panel">
         <h3>Student Information</h3>
         <form method="POST">
@@ -200,11 +207,9 @@ if (isset($_POST['delete_user'])) {
                     <label>Email</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" name="password" placeholder="New Password (Leave blank to keep current)">
-                    </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="New Password (Leave blank to keep current)">
                 </div>
             </div>
             <div class="form-row">
@@ -240,58 +245,103 @@ if (isset($_POST['delete_user'])) {
                 </div>
             </div>
             <div class="form-buttons">
-                <button type="submit" name="add_user">Add</button>
+                <button type="submit" name="add_user" class="active">Add</button>
                 <button type="submit" name="edit_user">Edit</button>
                 <button type="submit" name="delete_user" onclick="return confirm('Are you sure you want to delete this student?');">Delete</button>
+                <button type="button" onclick="clearForm();">Clear</button>
             </div>
         </form>
     </div>
 
-    <!-- Spacer for Separation -->
-    <div class="spacer"></div>
-
-    <!-- User List Table -->
-    <div class="user-list-container">
-        <h3>Student List</h3>
-        <form method="POST">
-            <input type="text" name="search_query" placeholder="Search student..." value="<?php echo htmlspecialchars($search_query); ?>">
-            <button type="submit" name="search">Search</button>
+    <!-- Search Bar -->
+    <div class="search-container">
+        <form method="POST" class="search-form">
+            <div class="search-input-group">
+                <input type="text" name="search_query" placeholder="Search staff by ID, name, username or department..." 
+                       value="<?php echo htmlspecialchars($search_query); ?>">
+                <button type="submit" name="search" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <?php if (!empty($search_query)): ?>
+                    <a href="student_management.php" class="clear-search-button" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </a>
+                <?php endif; ?>
+            </div>
         </form>
-        <table>
-            <thead>
-                <tr>
-                    <th>Ctrl No.</th>
-                    <th>Student No.</th>
-                    <th>Username</th>
-                    <th>Last Name</th>
-                    <th>First Name</th>
-                    <th>Middle Name</th>
-                    <th>Email</th>
-                    <th>Program</th>
-                    <th>Section</th>
-                    <th>Level</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch_assoc()) { ?>
-                    <tr onclick="selectUser('<?php echo $row['CtrlNo']; ?>', '<?php echo $row['studentNo']; ?>', '<?php echo $row['Username']; ?>', '<?php echo $row['LastName']; ?>', '<?php echo $row['FirstName']; ?>', '<?php echo $row['Mname']; ?>', '<?php echo $row['Email']; ?>', '<?php echo $row['ProgramCode']; ?>', '<?php echo $row['SectionCode']; ?>', '<?php echo $row['Level']; ?>')">
-                        <td><?php echo $row['CtrlNo']; ?></td>
-                        <td><?php echo $row['studentNo']; ?></td>
-                        <td><?php echo $row['Username']; ?></td>
-                        <td><?php echo $row['LastName']; ?></td>
-                        <td><?php echo $row['FirstName']; ?></td>
-                        <td><?php echo $row['Mname']; ?></td>
-                        <td><?php echo $row['Email']; ?></td>
-                        <td><?php echo $row['ProgramCode']; ?></td>
-                        <td><?php echo $row['SectionCode']; ?></td>
-                        <td><?php echo $row['Level']; ?></td>
-                        <td><button type="button">Select</button></td>
-                    </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+    </div>
+
+    <!-- Scrollable Content Area -->
+    <div class="scrollable-content">
+        <!-- Student List Table -->
+        <div class="user-list-container">
+            <h3>Student List</h3>
+            <?php if ($result->num_rows > 0): ?>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ctrl No.</th>
+                                <th>Student No.</th>
+                                <th>Username</th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Email</th>
+                                <th>Program</th>
+                                <th>Section</th>
+                                <th>Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = $result->fetch_assoc()) { ?>
+                                <tr onclick="selectUser('<?php echo $row['CtrlNo']; ?>', '<?php echo $row['studentNo']; ?>', '<?php echo $row['Username']; ?>', '<?php echo $row['LastName']; ?>', '<?php echo $row['FirstName']; ?>', '<?php echo $row['Mname']; ?>', '<?php echo $row['Email']; ?>', '<?php echo $row['ProgramCode']; ?>', '<?php echo $row['SectionCode']; ?>', '<?php echo $row['Level']; ?>')">
+                                    <td><?php echo $row['CtrlNo']; ?></td>
+                                    <td><?php echo $row['studentNo']; ?></td>
+                                    <td><?php echo $row['Username']; ?></td>
+                                    <td><?php echo $row['LastName']; ?></td>
+                                    <td><?php echo $row['FirstName']; ?></td>
+                                    <td><?php echo $row['Mname']; ?></td>
+                                    <td><?php echo $row['Email']; ?></td>
+                                    <td><?php echo $row['ProgramCode']; ?></td>
+                                    <td><?php echo $row['SectionCode']; ?></td>
+                                    <td><?php echo $row['Level']; ?></td>
+                                    <td><button type="button" class="select-btn">Select</button></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p class="no-results">No students found.</p>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
+
+<script>
+function selectUser(ctrlNo, studentNo, username, lastName, firstName, middleName, email, programCode, sectionCode, level) {
+    document.getElementById('ctrl_no').value = ctrlNo;
+    document.getElementById('student_no').value = studentNo;
+    document.getElementById('username').value = username;
+    document.getElementById('last_name').value = lastName;
+    document.getElementById('first_name').value = firstName;
+    document.getElementById('middle_name').value = middleName;
+    document.getElementById('email').value = email;
+    document.getElementById('program_code').value = programCode;
+    document.getElementById('section_code').value = sectionCode;
+    document.getElementById('level').value = level;
+}
+
+function clearForm() {
+    document.querySelector('form').reset();
+    document.getElementById('ctrl_no').value = '<?php echo $next_ctrl_no; ?>';
+}
+</script>
+
 </body>
 </html>
+<?php
+$conn->close();
+?>

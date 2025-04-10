@@ -2,9 +2,11 @@
 session_start();
 include 'db_connect.php';
 
-// Initialize message variables
+
+
+
 $message = '';
-$message_type = ''; // 'success' or 'error'
+$message_type = '';
 
 // Fetch the next available control number
 $ctrl_no_query = "SELECT MAX(CtrlNo) AS max_ctrl FROM staff";
@@ -12,7 +14,7 @@ $ctrl_no_result = $conn->query($ctrl_no_query);
 $row = $ctrl_no_result->fetch_assoc();
 $next_ctrl_no = $row['max_ctrl'] + 1;
 
-// Fetch departments for dropdown (only once)
+// Fetch departments for dropdown
 $dept_query = "SELECT * FROM departments"; 
 $dept_result = $conn->query($dept_query);
 $departments = [];
@@ -144,12 +146,11 @@ if (isset($_POST['delete_user'])) {
 
 // Clear Form
 if (isset($_POST['clear_form'])) {
-    // This will just reset the form to add new user mode
+    // Reset to add new user mode
     $next_ctrl_no = $conn->query("SELECT MAX(CtrlNo) AS max_ctrl FROM staff")->fetch_assoc()['max_ctrl'] + 1;
 }
 
 // Fetch staff users (again after possible changes)
-$sql = "SELECT * FROM staff";
 if (!empty($search_query)) {
     $sql = "SELECT * FROM staff WHERE 
             StaffID LIKE '%$search_query%' OR 
@@ -157,6 +158,8 @@ if (!empty($search_query)) {
             LastName LIKE '%$search_query%' OR 
             FirstName LIKE '%$search_query%' OR 
             Department LIKE '%$search_query%'";
+} else {
+    $sql = "SELECT * FROM staff";
 }
 $result = $conn->query($sql);
 ?>
@@ -168,23 +171,7 @@ $result = $conn->query($sql);
     <title>Staff User Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-    </style>
+    <link rel="stylesheet" href="staff_management.css">
     <script>
         function selectUser(ctrlNo, staffId, username, lastName, firstName, middleName, email, department) {
             document.getElementById("ctrl_no").value = ctrlNo;
@@ -224,6 +211,21 @@ $result = $conn->query($sql);
         function confirmDelete() {
             return confirm("Are you sure you want to delete this user?");
         }
+
+        // Add focus effect when search input is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input-group input');
+            
+            if (searchInput) {
+                searchInput.addEventListener('focus', function() {
+                    this.parentElement.querySelector('.search-button').style.color = '#4a90e2';
+                });
+                
+                searchInput.addEventListener('blur', function() {
+                    this.parentElement.querySelector('.search-button').style.color = '#666';
+                });
+            }
+        });
     </script>
 </head>
 <body>
@@ -246,6 +248,7 @@ $result = $conn->query($sql);
         <li class="logout"><a href="logout.php"><i class="icon-logout"></i> Logout</a></li>
     </ul>
 </nav>
+
 <div class="container">
     <?php if (!empty($message)): ?>
         <div class="message <?php echo $message_type; ?>">
@@ -321,53 +324,69 @@ $result = $conn->query($sql);
 
     <!-- Search Bar -->
     <div class="search-container">
-        <form method="POST">
-            <input type="text" name="search_query" placeholder="Search staff..." value="<?php echo htmlspecialchars($search_query); ?>">
-            <button type="submit" name="search"><i class="fas fa-search"></i> Search</button>
-            <?php if (!empty($search_query)): ?>
-                <a href="staff_management.php" class="clear-search">Clear Search</a>
-            <?php endif; ?>
+        <form method="POST" class="search-form">
+            <div class="search-input-group">
+                <input type="text" name="search_query" placeholder="Search staff by ID, name, username or department..." 
+                       value="<?php echo htmlspecialchars($search_query); ?>">
+                <button type="submit" name="search" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+                <?php if (!empty($search_query)): ?>
+                    <a href="staff_management.php" class="clear-search-button" title="Clear search">
+                        <i class="fas fa-times"></i>
+                    </a>
+                <?php endif; ?>
+            </div>
         </form>
     </div>
 
-    <!-- User List Table -->
-    <div class="user-list-container">
-        <h3>Staff List</h3>
-        <?php if ($result->num_rows > 0): ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ctrl No.</th>
-                        <th>Staff ID</th>
-                        <th>Username</th>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Email</th>
-                        <th>Department</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr onclick="selectUser('<?php echo $row['CtrlNo']; ?>', '<?php echo htmlspecialchars($row['StaffID']); ?>', '<?php echo htmlspecialchars($row['Username']); ?>', '<?php echo htmlspecialchars($row['LastName']); ?>', '<?php echo htmlspecialchars($row['FirstName']); ?>', '<?php echo htmlspecialchars($row['Mname']); ?>', '<?php echo htmlspecialchars($row['Email']); ?>', '<?php echo htmlspecialchars($row['Department']); ?>')">
-                            <td><?php echo $row['CtrlNo']; ?></td>
-                            <td><?php echo htmlspecialchars($row['StaffID']); ?></td>
-                            <td><?php echo htmlspecialchars($row['Username']); ?></td>
-                            <td><?php echo htmlspecialchars($row['LastName']); ?></td>
-                            <td><?php echo htmlspecialchars($row['FirstName']); ?></td>
-                            <td><?php echo htmlspecialchars($row['Mname']); ?></td>
-                            <td><?php echo htmlspecialchars($row['Email']); ?></td>
-                            <td><?php echo htmlspecialchars($row['Department']); ?></td>
-                            <td><button type="button">Select</button></td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <p>No staff members found.</p>
-        <?php endif; ?>
+    <!-- Scrollable Content Area -->
+    <div class="scrollable-content">
+        <!-- Staff List Table -->
+        <div class="user-list-container">
+            <h3>Staff List</h3>
+            <?php if ($result->num_rows > 0): ?>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ctrl No.</th>
+                                <th>Staff ID</th>
+                                <th>Username</th>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr onclick="selectUser('<?php echo $row['CtrlNo']; ?>', '<?php echo htmlspecialchars($row['StaffID']); ?>', '<?php echo htmlspecialchars($row['Username']); ?>', '<?php echo htmlspecialchars($row['LastName']); ?>', '<?php echo htmlspecialchars($row['FirstName']); ?>', '<?php echo htmlspecialchars($row['Mname']); ?>', '<?php echo htmlspecialchars($row['Email']); ?>', '<?php echo htmlspecialchars($row['Department']); ?>')">
+                                    <td><?php echo $row['CtrlNo']; ?></td>
+                                    <td><?php echo htmlspecialchars($row['StaffID']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Username']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['LastName']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['FirstName']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Mname']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Email']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Department']); ?></td>
+                                    <td><button type="button" class="select-btn">Select</button></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p class="no-results">No staff members found.</p>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
+
 </body>
 </html>
+<?php
+$conn->close();
+?>
