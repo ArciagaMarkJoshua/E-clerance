@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($email) && !empty($password)) {
         // Prepare SQL statement to prevent SQL Injection
-        $stmt = $conn->prepare("SELECT CtrlNo, StaffID, Username, PasswordHash, LastName, FirstName, AccountType FROM staff WHERE Email = ? AND AccountType = ''");
+        $stmt = $conn->prepare("SELECT CtrlNo, StaffID, Username, PasswordHash, LastName, FirstName, AccountType, Department FROM staff WHERE Email = ?");
         if (!$stmt) {
             die("Prepare failed: " . $conn->error);
         }
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->store_result();
         
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($ctrlNo, $staffID, $username, $hashed_password, $lastName, $firstName, $accountType);
+            $stmt->bind_result($ctrlNo, $staffID, $username, $hashed_password, $lastName, $firstName, $accountType, $department);
             $stmt->fetch();
             
             // Verify password (assuming passwords are hashed)
@@ -33,15 +33,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['staff_id'] = $staffID;
                 $_SESSION['username'] = $username;
                 $_SESSION['account_type'] = $accountType;
+                $_SESSION['department'] = $department;
 
-                // Redirect to admin dashboard
-                header("Location: staff_management.php");
+                // Redirect based on account type
+                if ($accountType == 'Admin') {
+                    header("Location: dashboard.php");
+                } else {
+                    header("Location: eclearance.php");
+                }
                 exit();
             } else {
                 $error = "⚠ Invalid email or password.";
             }
         } else {
-            $error = "⚠ Admin account not found. Please contact support.";
+            $error = "⚠ Account not found. Please contact support.";
         }
         $stmt->close();
     } else {
@@ -50,6 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

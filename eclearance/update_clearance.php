@@ -2,13 +2,30 @@
 session_start();
 include 'db_connect.php';
 
+// Check if user is logged in
+if (!isset($_SESSION['staff_id'])) {
+    die("Error: Unauthorized access");
+}
+
+// Get user's department from session
+$user_department = $_SESSION['department'] ?? '';
+$staffID = $_SESSION['staff_id'];
+
+// Create requirement-department mapping
+$requirement_departments = [
+    1 => 'College Library',
+    2 => 'Guidance Office',
+    3 => 'Office of the Dean',
+    4 => 'Office of the Finance Director',
+    5 => 'Office of the Registrar',
+    6 => 'Property Custodian',
+    7 => 'Student Council'
+];
+
 // Get form data
 $studentNo = $conn->real_escape_string($_POST['studentNo'] ?? '');
 $requirement_id = intval($_POST['requirement_id'] ?? 0);
 $status = $conn->real_escape_string($_POST['status'] ?? '');
-
-// Default staff ID
-$staffID = 1; // make sure StaffID 1 exists in your 'staff' table
 
 // Validate inputs
 if (empty($studentNo) || $requirement_id <= 0 || empty($status)) {
@@ -17,6 +34,11 @@ if (empty($studentNo) || $requirement_id <= 0 || empty($status)) {
 
 if (!in_array($status, ['Pending', 'Approved'])) {
     die("Error: Invalid status value");
+}
+
+// Check if user has permission to update this requirement
+if ($requirement_departments[$requirement_id] != $user_department) {
+    die("Error: You don't have permission to update this requirement");
 }
 
 // Check if student exists

@@ -2,6 +2,8 @@
 session_start();
 include 'db_connect.php';
 
+
+
 // Store selected student in session when available
 if (isset($_GET['studentNo'])) {
     $_SESSION['current_student'] = $_GET['studentNo'];
@@ -47,6 +49,13 @@ $requirement_departments = [
     6 => 'Property Custodian',
     7 => 'Student Council'
 ];
+
+// Get user's department from session
+$user_department = $_SESSION['department'] ?? '';
+
+// Map departments to requirement IDs
+$department_requirements = array_flip($requirement_departments);
+$user_requirement_id = $department_requirements[$user_department] ?? 0;
 
 // Fetch clearance requirements
 $requirements_query = "SELECT * FROM clearance_requirements ORDER BY requirement_id";
@@ -480,8 +489,13 @@ while ($status = $clearance_result->fetch_assoc()) {
                         <form method="POST" action="update_clearance.php">
                             <input type="hidden" name="studentNo" value="<?= $student['studentNo'] ?>">
                             <input type="hidden" name="requirement_id" value="<?= $req_id ?>">
-                            <button type="submit" name="status" value="Pending" class="btn-pending">Pending</button>
-                            <button type="submit" name="status" value="Approved" class="btn-approved">Approve</button>
+                            <?php if ($req_id == $user_requirement_id): ?>
+                                <button type="submit" name="status" value="Pending" class="btn-pending">Pending</button>
+                                <button type="submit" name="status" value="Approved" class="btn-approved">Approve</button>
+                            <?php else: ?>
+                                <button type="button" disabled class="btn-pending" style="opacity: 0.5;">Pending</button>
+                                <button type="button" disabled class="btn-approved" style="opacity: 0.5;">Approve</button>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </td>
@@ -489,6 +503,7 @@ while ($status = $clearance_result->fetch_assoc()) {
             <?php endforeach; ?>
         </tbody>
     </table>
+
 
     <!-- Table of Students -->
     <h3 class="section-header">Student List</h3>
