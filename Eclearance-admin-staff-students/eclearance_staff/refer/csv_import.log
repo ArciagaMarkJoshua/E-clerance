@@ -1,0 +1,822 @@
+[12-Jun-2025 12:48:51 Europe/Berlin] Raw file content:
+studentNo,username,email,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester
+2023-0001,john.doe,john.doe@example.com,Doe,John,Smith,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0002,jane.smith,jane.smith@example.com,Smith,Jane,Marie,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0003,mike.wilson,mike.wilson@example.com,Wilson,Michael,James,BSIT,1,BSIT1B,2024-2025,First Semester
+2023-0004,sarah.jones,sarah.jones@example.com,Jones,Sarah,Ann,BSIT,1,BSIT1B,2024-2025,First Semester
+2023-0005,david.brown,david.brown@example.com,Brown,David,Lee,BSIT,1,BSIT1C,2024-2025,First Semester
+[12-Jun-2025 12:48:51 Europe/Berlin] Number of lines after split: 6
+[12-Jun-2025 12:48:51 Europe/Berlin] Number of lines after removing empty lines: 6
+[12-Jun-2025 12:48:51 Europe/Berlin] Headers found: Array
+(
+    [0] => studentNo
+    [1] => username
+    [2] => email
+    [3] => lastName
+    [4] => firstName
+    [5] => middleName
+    [6] => programCode
+    [7] => level
+    [8] => sectionCode
+    [9] => academicYear
+    [10] => semester
+)
+
+[12-Jun-2025 12:48:51 Europe/Berlin] Cleaned headers: Array
+(
+    [0] => studentNo
+    [1] => username
+    [2] => email
+    [3] => lastName
+    [4] => firstName
+    [5] => middleName
+    [6] => programCode
+    [7] => level
+    [8] => sectionCode
+    [9] => academicYear
+    [10] => semester
+)
+
+[12-Jun-2025 12:48:51 Europe/Berlin] Header map: Array
+(
+    [studentNo] => studentNo
+    [username] => username
+    [email] => email
+    [lastName] => lastName
+    [firstName] => firstName
+    [middleName] => middleName
+    [programCode] => programCode
+    [level] => level
+    [sectionCode] => sectionCode
+    [academicYear] => academicYear
+    [semester] => semester
+)
+
+[12-Jun-2025 12:48:51 Europe/Berlin] 
+Processing row 2: 2023-0001,john.doe,john.doe@example.com,Doe,John,Smith,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:48:51 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0001
+    [1] => john.doe
+    [2] => john.doe@example.com
+    [3] => Doe
+    [4] => John
+    [5] => Smith
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:48:51 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0001
+    [username] => john.doe
+    [email] => john.doe@example.com
+    [lastName] => Doe
+    [firstName] => John
+    [middleName] => Smith
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:48:51 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:48:51 Europe/Berlin] studentNo: 2023-0001
+[12-Jun-2025 12:48:51 Europe/Berlin] username: john.doe
+[12-Jun-2025 12:48:51 Europe/Berlin] email: john.doe@example.com
+[12-Jun-2025 12:48:51 Europe/Berlin] lastName: Doe
+[12-Jun-2025 12:48:51 Europe/Berlin] firstName: John
+[12-Jun-2025 12:48:51 Europe/Berlin] middleName: Smith
+[12-Jun-2025 12:48:51 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:48:51 Europe/Berlin] level: 1
+[12-Jun-2025 12:48:51 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:48:51 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:48:51 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] 
+Processing row 3: 2023-0002,jane.smith,jane.smith@example.com,Smith,Jane,Marie,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0002
+    [1] => jane.smith
+    [2] => jane.smith@example.com
+    [3] => Smith
+    [4] => Jane
+    [5] => Marie
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0002
+    [username] => jane.smith
+    [email] => jane.smith@example.com
+    [lastName] => Smith
+    [firstName] => Jane
+    [middleName] => Marie
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:48:52 Europe/Berlin] studentNo: 2023-0002
+[12-Jun-2025 12:48:52 Europe/Berlin] username: jane.smith
+[12-Jun-2025 12:48:52 Europe/Berlin] email: jane.smith@example.com
+[12-Jun-2025 12:48:52 Europe/Berlin] lastName: Smith
+[12-Jun-2025 12:48:52 Europe/Berlin] firstName: Jane
+[12-Jun-2025 12:48:52 Europe/Berlin] middleName: Marie
+[12-Jun-2025 12:48:52 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:48:52 Europe/Berlin] level: 1
+[12-Jun-2025 12:48:52 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:48:52 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:48:52 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] 
+Processing row 4: 2023-0003,mike.wilson,mike.wilson@example.com,Wilson,Michael,James,BSIT,1,BSIT1B,2024-2025,First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0003
+    [1] => mike.wilson
+    [2] => mike.wilson@example.com
+    [3] => Wilson
+    [4] => Michael
+    [5] => James
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1B
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0003
+    [username] => mike.wilson
+    [email] => mike.wilson@example.com
+    [lastName] => Wilson
+    [firstName] => Michael
+    [middleName] => James
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1B
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:48:52 Europe/Berlin] studentNo: 2023-0003
+[12-Jun-2025 12:48:52 Europe/Berlin] username: mike.wilson
+[12-Jun-2025 12:48:52 Europe/Berlin] email: mike.wilson@example.com
+[12-Jun-2025 12:48:52 Europe/Berlin] lastName: Wilson
+[12-Jun-2025 12:48:52 Europe/Berlin] firstName: Michael
+[12-Jun-2025 12:48:52 Europe/Berlin] middleName: James
+[12-Jun-2025 12:48:52 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:48:52 Europe/Berlin] level: 1
+[12-Jun-2025 12:48:52 Europe/Berlin] sectionCode: BSIT1B
+[12-Jun-2025 12:48:52 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:48:52 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] 
+Processing row 5: 2023-0004,sarah.jones,sarah.jones@example.com,Jones,Sarah,Ann,BSIT,1,BSIT1B,2024-2025,First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0004
+    [1] => sarah.jones
+    [2] => sarah.jones@example.com
+    [3] => Jones
+    [4] => Sarah
+    [5] => Ann
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1B
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0004
+    [username] => sarah.jones
+    [email] => sarah.jones@example.com
+    [lastName] => Jones
+    [firstName] => Sarah
+    [middleName] => Ann
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1B
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:48:52 Europe/Berlin] studentNo: 2023-0004
+[12-Jun-2025 12:48:52 Europe/Berlin] username: sarah.jones
+[12-Jun-2025 12:48:52 Europe/Berlin] email: sarah.jones@example.com
+[12-Jun-2025 12:48:52 Europe/Berlin] lastName: Jones
+[12-Jun-2025 12:48:52 Europe/Berlin] firstName: Sarah
+[12-Jun-2025 12:48:52 Europe/Berlin] middleName: Ann
+[12-Jun-2025 12:48:52 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:48:52 Europe/Berlin] level: 1
+[12-Jun-2025 12:48:52 Europe/Berlin] sectionCode: BSIT1B
+[12-Jun-2025 12:48:52 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:48:52 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] 
+Processing row 6: 2023-0005,david.brown,david.brown@example.com,Brown,David,Lee,BSIT,1,BSIT1C,2024-2025,First Semester
+[12-Jun-2025 12:48:52 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0005
+    [1] => david.brown
+    [2] => david.brown@example.com
+    [3] => Brown
+    [4] => David
+    [5] => Lee
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1C
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0005
+    [username] => david.brown
+    [email] => david.brown@example.com
+    [lastName] => Brown
+    [firstName] => David
+    [middleName] => Lee
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1C
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:48:52 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:48:52 Europe/Berlin] studentNo: 2023-0005
+[12-Jun-2025 12:48:52 Europe/Berlin] username: david.brown
+[12-Jun-2025 12:48:52 Europe/Berlin] email: david.brown@example.com
+[12-Jun-2025 12:48:52 Europe/Berlin] lastName: Brown
+[12-Jun-2025 12:48:52 Europe/Berlin] firstName: David
+[12-Jun-2025 12:48:52 Europe/Berlin] middleName: Lee
+[12-Jun-2025 12:48:52 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:48:52 Europe/Berlin] level: 1
+[12-Jun-2025 12:48:52 Europe/Berlin] sectionCode: BSIT1C
+[12-Jun-2025 12:48:52 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:48:52 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Raw file content:
+studentNo,username,email,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester
+2023-0001,reanne.matias,reanne.matias@example.com,Matias,Reanne,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0002,patrick.baltazar,patrick.baltazar@example.com,Baltazar,Patrick,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0003,eduardo.doldol,eduardo.doldol@example.com,Doldol,Eduardo,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0004,andrei.martinez,andrei.martinez@example.com,Martinez,Andrei,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0005,pj.doldol,pj.doldol@example.com,Doldol,PJ,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Number of lines after split: 6
+[12-Jun-2025 12:52:21 Europe/Berlin] Number of lines after removing empty lines: 6
+[12-Jun-2025 12:52:21 Europe/Berlin] Headers found: Array
+(
+    [0] => studentNo
+    [1] => username
+    [2] => email
+    [3] => lastName
+    [4] => firstName
+    [5] => middleName
+    [6] => programCode
+    [7] => level
+    [8] => sectionCode
+    [9] => academicYear
+    [10] => semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Cleaned headers: Array
+(
+    [0] => studentNo
+    [1] => username
+    [2] => email
+    [3] => lastName
+    [4] => firstName
+    [5] => middleName
+    [6] => programCode
+    [7] => level
+    [8] => sectionCode
+    [9] => academicYear
+    [10] => semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Header map: Array
+(
+    [studentNo] => studentNo
+    [username] => username
+    [email] => email
+    [lastName] => lastName
+    [firstName] => firstName
+    [middleName] => middleName
+    [programCode] => programCode
+    [level] => level
+    [sectionCode] => sectionCode
+    [academicYear] => academicYear
+    [semester] => semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] 
+Processing row 2: 2023-0001,reanne.matias,reanne.matias@example.com,Matias,Reanne,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0001
+    [1] => reanne.matias
+    [2] => reanne.matias@example.com
+    [3] => Matias
+    [4] => Reanne
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0001
+    [username] => reanne.matias
+    [email] => reanne.matias@example.com
+    [lastName] => Matias
+    [firstName] => Reanne
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:52:21 Europe/Berlin] studentNo: 2023-0001
+[12-Jun-2025 12:52:21 Europe/Berlin] username: reanne.matias
+[12-Jun-2025 12:52:21 Europe/Berlin] email: reanne.matias@example.com
+[12-Jun-2025 12:52:21 Europe/Berlin] lastName: Matias
+[12-Jun-2025 12:52:21 Europe/Berlin] firstName: Reanne
+[12-Jun-2025 12:52:21 Europe/Berlin] middleName: 
+[12-Jun-2025 12:52:21 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:52:21 Europe/Berlin] level: 1
+[12-Jun-2025 12:52:21 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:52:21 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:52:21 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] 
+Processing row 3: 2023-0002,patrick.baltazar,patrick.baltazar@example.com,Baltazar,Patrick,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0002
+    [1] => patrick.baltazar
+    [2] => patrick.baltazar@example.com
+    [3] => Baltazar
+    [4] => Patrick
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0002
+    [username] => patrick.baltazar
+    [email] => patrick.baltazar@example.com
+    [lastName] => Baltazar
+    [firstName] => Patrick
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:52:21 Europe/Berlin] studentNo: 2023-0002
+[12-Jun-2025 12:52:21 Europe/Berlin] username: patrick.baltazar
+[12-Jun-2025 12:52:21 Europe/Berlin] email: patrick.baltazar@example.com
+[12-Jun-2025 12:52:21 Europe/Berlin] lastName: Baltazar
+[12-Jun-2025 12:52:21 Europe/Berlin] firstName: Patrick
+[12-Jun-2025 12:52:21 Europe/Berlin] middleName: 
+[12-Jun-2025 12:52:21 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:52:21 Europe/Berlin] level: 1
+[12-Jun-2025 12:52:21 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:52:21 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:52:21 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] 
+Processing row 4: 2023-0003,eduardo.doldol,eduardo.doldol@example.com,Doldol,Eduardo,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0003
+    [1] => eduardo.doldol
+    [2] => eduardo.doldol@example.com
+    [3] => Doldol
+    [4] => Eduardo
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0003
+    [username] => eduardo.doldol
+    [email] => eduardo.doldol@example.com
+    [lastName] => Doldol
+    [firstName] => Eduardo
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:52:21 Europe/Berlin] studentNo: 2023-0003
+[12-Jun-2025 12:52:21 Europe/Berlin] username: eduardo.doldol
+[12-Jun-2025 12:52:21 Europe/Berlin] email: eduardo.doldol@example.com
+[12-Jun-2025 12:52:21 Europe/Berlin] lastName: Doldol
+[12-Jun-2025 12:52:21 Europe/Berlin] firstName: Eduardo
+[12-Jun-2025 12:52:21 Europe/Berlin] middleName: 
+[12-Jun-2025 12:52:21 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:52:21 Europe/Berlin] level: 1
+[12-Jun-2025 12:52:21 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:52:21 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:52:21 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] 
+Processing row 5: 2023-0004,andrei.martinez,andrei.martinez@example.com,Martinez,Andrei,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0004
+    [1] => andrei.martinez
+    [2] => andrei.martinez@example.com
+    [3] => Martinez
+    [4] => Andrei
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0004
+    [username] => andrei.martinez
+    [email] => andrei.martinez@example.com
+    [lastName] => Martinez
+    [firstName] => Andrei
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:52:21 Europe/Berlin] studentNo: 2023-0004
+[12-Jun-2025 12:52:21 Europe/Berlin] username: andrei.martinez
+[12-Jun-2025 12:52:21 Europe/Berlin] email: andrei.martinez@example.com
+[12-Jun-2025 12:52:21 Europe/Berlin] lastName: Martinez
+[12-Jun-2025 12:52:21 Europe/Berlin] firstName: Andrei
+[12-Jun-2025 12:52:21 Europe/Berlin] middleName: 
+[12-Jun-2025 12:52:21 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:52:21 Europe/Berlin] level: 1
+[12-Jun-2025 12:52:21 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:52:21 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:52:21 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] 
+Processing row 6: 2023-0005,pj.doldol,pj.doldol@example.com,Doldol,PJ,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:52:21 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0005
+    [1] => pj.doldol
+    [2] => pj.doldol@example.com
+    [3] => Doldol
+    [4] => PJ
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0005
+    [username] => pj.doldol
+    [email] => pj.doldol@example.com
+    [lastName] => Doldol
+    [firstName] => PJ
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:52:21 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:52:21 Europe/Berlin] studentNo: 2023-0005
+[12-Jun-2025 12:52:21 Europe/Berlin] username: pj.doldol
+[12-Jun-2025 12:52:21 Europe/Berlin] email: pj.doldol@example.com
+[12-Jun-2025 12:52:21 Europe/Berlin] lastName: Doldol
+[12-Jun-2025 12:52:21 Europe/Berlin] firstName: PJ
+[12-Jun-2025 12:52:21 Europe/Berlin] middleName: 
+[12-Jun-2025 12:52:21 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:52:21 Europe/Berlin] level: 1
+[12-Jun-2025 12:52:21 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:52:21 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:52:21 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Raw file content:
+studentNo,username,email,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester
+2023-0001,reanne.matias,reanne.matias@example.com,Matias,Reanne,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0002,patrick.baltazar,patrick.baltazar@example.com,Baltazar,Patrick,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0003,eduardo.doldol,eduardo.doldol@example.com,Doldol,Eduardo,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0004,andrei.martinez,andrei.martinez@example.com,Martinez,Andrei,,BSIT,1,BSIT1A,2024-2025,First Semester
+2023-0005,pj.doldol,pj.doldol@example.com,Doldol,PJ,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Number of lines after split: 6
+[12-Jun-2025 12:58:23 Europe/Berlin] Number of lines after removing empty lines: 6
+[12-Jun-2025 12:58:23 Europe/Berlin] Headers found: Array
+(
+    [0] => studentNo
+    [1] => username
+    [2] => email
+    [3] => lastName
+    [4] => firstName
+    [5] => middleName
+    [6] => programCode
+    [7] => level
+    [8] => sectionCode
+    [9] => academicYear
+    [10] => semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Cleaned headers: Array
+(
+    [0] => studentNo
+    [1] => username
+    [2] => email
+    [3] => lastName
+    [4] => firstName
+    [5] => middleName
+    [6] => programCode
+    [7] => level
+    [8] => sectionCode
+    [9] => academicYear
+    [10] => semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Header map: Array
+(
+    [studentNo] => studentNo
+    [username] => username
+    [email] => email
+    [lastName] => lastName
+    [firstName] => firstName
+    [middleName] => middleName
+    [programCode] => programCode
+    [level] => level
+    [sectionCode] => sectionCode
+    [academicYear] => academicYear
+    [semester] => semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] 
+Processing row 2: 2023-0001,reanne.matias,reanne.matias@example.com,Matias,Reanne,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0001
+    [1] => reanne.matias
+    [2] => reanne.matias@example.com
+    [3] => Matias
+    [4] => Reanne
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0001
+    [username] => reanne.matias
+    [email] => reanne.matias@example.com
+    [lastName] => Matias
+    [firstName] => Reanne
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:58:23 Europe/Berlin] studentNo: 2023-0001
+[12-Jun-2025 12:58:23 Europe/Berlin] username: reanne.matias
+[12-Jun-2025 12:58:23 Europe/Berlin] email: reanne.matias@example.com
+[12-Jun-2025 12:58:23 Europe/Berlin] lastName: Matias
+[12-Jun-2025 12:58:23 Europe/Berlin] firstName: Reanne
+[12-Jun-2025 12:58:23 Europe/Berlin] middleName: 
+[12-Jun-2025 12:58:23 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:58:23 Europe/Berlin] level: 1
+[12-Jun-2025 12:58:23 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:58:23 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:58:23 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] 
+Processing row 3: 2023-0002,patrick.baltazar,patrick.baltazar@example.com,Baltazar,Patrick,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0002
+    [1] => patrick.baltazar
+    [2] => patrick.baltazar@example.com
+    [3] => Baltazar
+    [4] => Patrick
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0002
+    [username] => patrick.baltazar
+    [email] => patrick.baltazar@example.com
+    [lastName] => Baltazar
+    [firstName] => Patrick
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:58:23 Europe/Berlin] studentNo: 2023-0002
+[12-Jun-2025 12:58:23 Europe/Berlin] username: patrick.baltazar
+[12-Jun-2025 12:58:23 Europe/Berlin] email: patrick.baltazar@example.com
+[12-Jun-2025 12:58:23 Europe/Berlin] lastName: Baltazar
+[12-Jun-2025 12:58:23 Europe/Berlin] firstName: Patrick
+[12-Jun-2025 12:58:23 Europe/Berlin] middleName: 
+[12-Jun-2025 12:58:23 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:58:23 Europe/Berlin] level: 1
+[12-Jun-2025 12:58:23 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:58:23 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:58:23 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] 
+Processing row 4: 2023-0003,eduardo.doldol,eduardo.doldol@example.com,Doldol,Eduardo,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0003
+    [1] => eduardo.doldol
+    [2] => eduardo.doldol@example.com
+    [3] => Doldol
+    [4] => Eduardo
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0003
+    [username] => eduardo.doldol
+    [email] => eduardo.doldol@example.com
+    [lastName] => Doldol
+    [firstName] => Eduardo
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:58:23 Europe/Berlin] studentNo: 2023-0003
+[12-Jun-2025 12:58:23 Europe/Berlin] username: eduardo.doldol
+[12-Jun-2025 12:58:23 Europe/Berlin] email: eduardo.doldol@example.com
+[12-Jun-2025 12:58:23 Europe/Berlin] lastName: Doldol
+[12-Jun-2025 12:58:23 Europe/Berlin] firstName: Eduardo
+[12-Jun-2025 12:58:23 Europe/Berlin] middleName: 
+[12-Jun-2025 12:58:23 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:58:23 Europe/Berlin] level: 1
+[12-Jun-2025 12:58:23 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:58:23 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:58:23 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] 
+Processing row 5: 2023-0004,andrei.martinez,andrei.martinez@example.com,Martinez,Andrei,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0004
+    [1] => andrei.martinez
+    [2] => andrei.martinez@example.com
+    [3] => Martinez
+    [4] => Andrei
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0004
+    [username] => andrei.martinez
+    [email] => andrei.martinez@example.com
+    [lastName] => Martinez
+    [firstName] => Andrei
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:58:23 Europe/Berlin] studentNo: 2023-0004
+[12-Jun-2025 12:58:23 Europe/Berlin] username: andrei.martinez
+[12-Jun-2025 12:58:23 Europe/Berlin] email: andrei.martinez@example.com
+[12-Jun-2025 12:58:23 Europe/Berlin] lastName: Martinez
+[12-Jun-2025 12:58:23 Europe/Berlin] firstName: Andrei
+[12-Jun-2025 12:58:23 Europe/Berlin] middleName: 
+[12-Jun-2025 12:58:23 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:58:23 Europe/Berlin] level: 1
+[12-Jun-2025 12:58:23 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:58:23 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:58:23 Europe/Berlin] semester: First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] 
+Processing row 6: 2023-0005,pj.doldol,pj.doldol@example.com,Doldol,PJ,,BSIT,1,BSIT1A,2024-2025,First Semester
+[12-Jun-2025 12:58:23 Europe/Berlin] Parsed row data: Array
+(
+    [0] => 2023-0005
+    [1] => pj.doldol
+    [2] => pj.doldol@example.com
+    [3] => Doldol
+    [4] => PJ
+    [5] => 
+    [6] => BSIT
+    [7] => 1
+    [8] => BSIT1A
+    [9] => 2024-2025
+    [10] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Mapped student data: Array
+(
+    [studentNo] => 2023-0005
+    [username] => pj.doldol
+    [email] => pj.doldol@example.com
+    [lastName] => Doldol
+    [firstName] => PJ
+    [middleName] => 
+    [programCode] => BSIT
+    [level] => 1
+    [sectionCode] => BSIT1A
+    [academicYear] => 2024-2025
+    [semester] => First Semester
+)
+
+[12-Jun-2025 12:58:23 Europe/Berlin] Extracted and cleaned data:
+[12-Jun-2025 12:58:23 Europe/Berlin] studentNo: 2023-0005
+[12-Jun-2025 12:58:23 Europe/Berlin] username: pj.doldol
+[12-Jun-2025 12:58:23 Europe/Berlin] email: pj.doldol@example.com
+[12-Jun-2025 12:58:23 Europe/Berlin] lastName: Doldol
+[12-Jun-2025 12:58:23 Europe/Berlin] firstName: PJ
+[12-Jun-2025 12:58:23 Europe/Berlin] middleName: 
+[12-Jun-2025 12:58:23 Europe/Berlin] programCode: BSIT
+[12-Jun-2025 12:58:23 Europe/Berlin] level: 1
+[12-Jun-2025 12:58:23 Europe/Berlin] sectionCode: BSIT1A
+[12-Jun-2025 12:58:23 Europe/Berlin] academicYear: 2024-2025
+[12-Jun-2025 12:58:23 Europe/Berlin] semester: First Semester

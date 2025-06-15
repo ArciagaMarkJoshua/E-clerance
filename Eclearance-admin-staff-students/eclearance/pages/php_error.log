@@ -1,0 +1,2 @@
+[12-Jun-2025 13:34:05 Europe/Berlin] PHP Warning:  Undefined variable $search_query in C:\xampp\htdocs\eclearance\pages\student_management.php on line 1351
+[12-Jun-2025 13:34:05 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\eclearance\pages\student_management.php on line 1351
