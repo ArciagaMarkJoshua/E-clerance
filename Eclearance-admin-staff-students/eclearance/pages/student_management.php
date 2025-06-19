@@ -8,157 +8,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
     if ($_POST['action'] === 'add_student') {
         try {
-            // ... existing code for add_student ...
-            // Validate required fields
-            $required_fields = ['student_no', 'username', 'email', 'password', 'confirm_password', 'last_name', 'first_name', 'program', 'section', 'academic_year', 'semester', 'level'];
-            foreach ($required_fields as $field) {
-                if (empty($_POST[$field])) {
-                    throw new Exception("Please fill in all required fields.");
-                }
+            $data = [
+                'studentNo' => $_POST['student_no'],
+                'username' => $_POST['username'],
+                'email' => $_POST['email'],
+                'password' => $_POST['password'],
+                'lastName' => $_POST['last_name'],
+                'firstName' => $_POST['first_name'],
+                'middleName' => $_POST['middle_name'] ?? '',
+                'programCode' => $_POST['program'],
+                'level' => $_POST['level'],
+                'sectionCode' => $_POST['section'],
+                'academicYear' => $_POST['academic_year'],
+                'semester' => $_POST['semester']
+            ];
+            $error = null;
+            $registration_no = add_student_record($conn, $data, $error, true);
+            if ($registration_no === false) {
+                throw new Exception($error);
             }
-            
-            // Validate password match
-            if ($_POST['password'] !== $_POST['confirm_password']) {
-                throw new Exception("Passwords do not match.");
-            }
-
-            // Generate registration number (automatic)
-            $current_year = date('Y');
-            $last_reg_query = "SELECT RegistrationNo FROM students WHERE RegistrationNo LIKE ? ORDER BY RegistrationNo DESC LIMIT 1";
-            $stmt = $conn->prepare($last_reg_query);
-            $year_pattern = $current_year . "-%";
-            $stmt->bind_param("s", $year_pattern);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            if ($result->num_rows > 0) {
-                $last_reg = $result->fetch_assoc()['RegistrationNo'];
-                $last_number = intval(substr($last_reg, -4));
-                $new_number = $last_number + 1;
-            } else {
-                $new_number = 1;
-            }
-            $registration_no = $current_year . "-" . str_pad($new_number, 4, '0', STR_PAD_LEFT);
-
-            // Student number (manual input)
-            $student_no = $conn->real_escape_string($_POST['student_no']);
-
-            $username = $conn->real_escape_string($_POST['username']);
-            $email = $conn->real_escape_string($_POST['email']);
-            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $last_name = $conn->real_escape_string($_POST['last_name']);
-            $first_name = $conn->real_escape_string($_POST['first_name']);
-            $middle_name = $conn->real_escape_string($_POST['middle_name'] ?? '');
-            $program = $conn->real_escape_string($_POST['program']);
-            $section = $conn->real_escape_string($_POST['section']);
-            $academic_year = $conn->real_escape_string($_POST['academic_year']);
-            $semester = $conn->real_escape_string($_POST['semester']);
-            $level = intval($_POST['level']);
-
-            // Check if email or student number already exists
-            $check_query = "SELECT studentNo, Email FROM students WHERE studentNo = ? OR Email = ?";
-            $stmt = $conn->prepare($check_query);
-            $stmt->bind_param("ss", $student_no, $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                if ($row['studentNo'] === $student_no) {
-                    throw new Exception("Student number already exists.");
-                }
-                if ($row['Email'] === $email) {
-                    throw new Exception("Email already exists.");
-                }
-            }
-            $stmt->close();
-
-            // Insert new student
-            $insert_query = "INSERT INTO students (RegistrationNo, studentNo, Username, Email, PasswordHash, LastName, FirstName, Mname, ProgramCode, SectionCode, AcademicYear, Semester, Level, AccountType) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Student')";
-            $stmt = $conn->prepare($insert_query);
-            $stmt->bind_param("ssssssssssssi", $registration_no, $student_no, $username, $email, $password, $last_name, $first_name, $middle_name, $program, $section, $academic_year, $semester, $level);
-            
-            if (!$stmt->execute()) {
-                throw new Exception("Error adding student: " . $stmt->error);
-            }
-            
             echo json_encode(['success' => true, 'message' => "Student added successfully! Registration Number: " . $registration_no, 'new_registration_no' => $registration_no]);
             exit();
-            
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => "Error: " . $e->getMessage()]);
             exit();
         }
     } else if ($_POST['action'] === 'edit_student') {
         try {
-            // ... existing code for edit_student ...
-            // Validate required fields (excluding password for edit)
-            $required_fields = ['registration_no_for_action', 'student_no', 'username', 'email', 'last_name', 'first_name', 'program', 'section', 'academic_year', 'semester', 'level'];
-            $missing_fields = [];
-            
-            foreach ($required_fields as $field) {
-                if (empty($_POST[$field])) {
-                    $missing_fields[] = str_replace('_', ' ', ucfirst($field));
-                }
+            $data = [
+                'registrationNo' => $_POST['registration_no_for_action'],
+                'studentNo' => $_POST['student_no'],
+                'username' => $_POST['username'],
+                'email' => $_POST['email'],
+                'password' => $_POST['password'] ?? '',
+                'lastName' => $_POST['last_name'],
+                'firstName' => $_POST['first_name'],
+                'middleName' => $_POST['middle_name'] ?? '',
+                'programCode' => $_POST['program'],
+                'level' => $_POST['level'],
+                'sectionCode' => $_POST['section'],
+                'academicYear' => $_POST['academic_year'],
+                'semester' => $_POST['semester']
+            ];
+            $error = null;
+            $result = update_student_record($conn, $data, $error);
+            if ($result === false) {
+                throw new Exception($error);
             }
-            
-            if (!empty($missing_fields)) {
-                throw new Exception("Please fill in all required fields: " . implode(', ', $missing_fields));
-            }
-
-            $registration_no_for_action = $conn->real_escape_string($_POST['registration_no_for_action']); // Use RegistrationNo
-            $student_no = $conn->real_escape_string($_POST['student_no']);
-            $username = $conn->real_escape_string($_POST['username']);
-            $email = $conn->real_escape_string($_POST['email']);
-            $last_name = $conn->real_escape_string($_POST['last_name']);
-            $first_name = $conn->real_escape_string($_POST['first_name']);
-            $middle_name = $conn->real_escape_string($_POST['middle_name'] ?? '');
-            $program = $conn->real_escape_string($_POST['program']);
-            $section = $conn->real_escape_string($_POST['section']);
-            $academic_year = $conn->real_escape_string($_POST['academic_year']);
-            $semester = $conn->real_escape_string($_POST['semester']);
-            $level = intval($_POST['level']);
-
-            // Check if email or student number already exists for *other* students
-            $check_query = "SELECT studentNo, Email FROM students WHERE (studentNo = ? OR Email = ?) AND RegistrationNo != ?";
-            $stmt = $conn->prepare($check_query);
-            $stmt->bind_param("sss", $student_no, $email, $registration_no_for_action);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                if ($row['studentNo'] === $student_no) {
-                    throw new Exception("Student number already exists for another student.");
-                }
-                if ($row['Email'] === $email) {
-                    throw new Exception("Email already exists for another student.");
-                }
-            }
-            $stmt->close();
-
-            // Update student record
-            $update_query = "UPDATE students SET studentNo = ?, Username = ?, Email = ?, LastName = ?, FirstName = ?, Mname = ?, ProgramCode = ?, SectionCode = ?, AcademicYear = ?, Semester = ?, Level = ? WHERE RegistrationNo = ?";
-            $stmt = $conn->prepare($update_query);
-
-            if ($stmt === false) {
-                throw new Exception("Failed to prepare statement: " . $conn->error);
-            }
-            
-            error_log("Updating student: RegistrationNo=" . $registration_no_for_action . ", Semester=" . $semester . ", Level=" . $level);
-            $stmt->bind_param("sssssssssisi", 
-                $student_no, $username, $email, $last_name, $first_name, $middle_name,
-                $program, $section, $academic_year, $semester, $level, $registration_no_for_action
-            );
-
-            if (!$stmt->execute()) {
-                throw new Exception("Error updating student: " . $stmt->error);
-            }
-
             echo json_encode(['success' => true, 'message' => "Student updated successfully!"]);
             exit();
-
         } catch (Exception $e) {
             error_log("Edit student error: " . $e->getMessage());
             echo json_encode(['success' => false, 'message' => "Error: " . $e->getMessage()]);
@@ -575,6 +473,203 @@ if (isset($_SESSION['message'])) {
     $message_type = $_SESSION['message_type'];
     unset($_SESSION['message']);
     unset($_SESSION['message_type']);
+}
+
+// Bulk upload logic
+if (isset($_POST['bulk_upload_submit']) && isset($_FILES['csv_file'])) {
+    $file = $_FILES['csv_file']['tmp_name'];
+    $handle = fopen($file, 'r');
+    $bulk_upload_message = '';
+    $success = 0;
+    $errors = [];
+    if (!$handle) {
+        $bulk_upload_message = 'Failed to open uploaded file.';
+    } else {
+        $header = fgetcsv($handle);
+        $expected = ['studentNo','username','email','password','lastName','firstName','middleName','programCode','level','sectionCode','academicYear','semester'];
+        if ($header !== $expected) {
+            $bulk_upload_message = 'CSV header does not match expected columns.';
+        } else {
+            $rowNum = 1;
+            while (($row = fgetcsv($handle)) !== false) {
+                $rowNum++;
+                $data = array_combine($expected, $row);
+                // Validate required fields
+                foreach (['studentNo','username','email','password','lastName','firstName','programCode','level','sectionCode','academicYear','semester'] as $field) {
+                    if (empty($data[$field])) {
+                        $errors[] = "Row $rowNum: Missing $field.";
+                        continue 2;
+                    }
+                }
+                // Check for duplicate studentNo or email
+                $stmt = $conn->prepare("SELECT studentNo, Email FROM students WHERE studentNo = ? OR Email = ?");
+                $stmt->bind_param("ss", $data['studentNo'], $data['email']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    $rowx = $result->fetch_assoc();
+                    if ($rowx['studentNo'] === $data['studentNo']) {
+                        $errors[] = "Row $rowNum: Student number already exists.";
+                    } else {
+                        $errors[] = "Row $rowNum: Email already exists.";
+                    }
+                    $stmt->close();
+                    continue;
+                }
+                $stmt->close();
+                // Generate RegistrationNo
+                $current_year = date('Y');
+                $last_reg_query = "SELECT RegistrationNo FROM students WHERE RegistrationNo LIKE ? ORDER BY RegistrationNo DESC LIMIT 1";
+                $stmt = $conn->prepare($last_reg_query);
+                $year_pattern = $current_year . "-%";
+                $stmt->bind_param("s", $year_pattern);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    $last_reg = $result->fetch_assoc()['RegistrationNo'];
+                    $last_number = intval(substr($last_reg, -4));
+                    $new_number = $last_number + 1;
+                } else {
+                    $new_number = 1;
+                }
+                $registration_no = $current_year . "-" . str_pad($new_number, 4, '0', STR_PAD_LEFT);
+                $stmt->close();
+                // Hash password
+                $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
+                // Insert student
+                $insert_query = "INSERT INTO students (RegistrationNo, studentNo, Username, Email, PasswordHash, LastName, FirstName, Mname, ProgramCode, Level, SectionCode, AcademicYear, Semester, AccountType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Student')";
+                $stmt = $conn->prepare($insert_query);
+                $stmt->bind_param("sssssssssssss", $registration_no, $data['studentNo'], $data['username'], $data['email'], $password_hash, $data['lastName'], $data['firstName'], $data['middleName'], $data['programCode'], $data['level'], $data['sectionCode'], $data['academicYear'], $data['semester']);
+                if ($stmt->execute()) {
+                    $success++;
+                } else {
+                    $errors[] = "Row $rowNum: DB error: " . $stmt->error;
+                }
+                $stmt->close();
+            }
+            fclose($handle);
+        }
+    }
+    $bulk_upload_message = "$success students added successfully.";
+    if ($errors) $bulk_upload_message .= '<br>Errors:<br>' . implode('<br>', $errors);
+    $_SESSION['message'] = $bulk_upload_message;
+    $_SESSION['message_type'] = ($success > 0 && count($errors) == 0) ? 'success' : 'error';
+    header('Location: student_management.php');
+    exit();
+}
+
+// Helper function for adding a student (single or bulk)
+function add_student_record($conn, $data, &$error = null, $generate_registration = true) {
+    $required_fields = ['studentNo','username','email','password','lastName','firstName','programCode','level','sectionCode','academicYear','semester'];
+    foreach ($required_fields as $field) {
+        if (empty($data[$field])) {
+            $error = "Missing $field.";
+            return false;
+        }
+    }
+    // Check for duplicate studentNo or email
+    $stmt = $conn->prepare("SELECT studentNo, Email FROM students WHERE studentNo = ? OR Email = ?");
+    $stmt->bind_param("ss", $data['studentNo'], $data['email']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $rowx = $result->fetch_assoc();
+        if ($rowx['studentNo'] === $data['studentNo']) {
+            $error = "Student number already exists.";
+        } else {
+            $error = "Email already exists.";
+        }
+        $stmt->close();
+        return false;
+    }
+    $stmt->close();
+    // Generate RegistrationNo
+    if ($generate_registration) {
+        $current_year = date('Y');
+        $last_reg_query = "SELECT RegistrationNo FROM students WHERE RegistrationNo LIKE ? ORDER BY RegistrationNo DESC LIMIT 1";
+        $stmt = $conn->prepare($last_reg_query);
+        $year_pattern = $current_year . "-%";
+        $stmt->bind_param("s", $year_pattern);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $last_reg = $result->fetch_assoc()['RegistrationNo'];
+            $last_number = intval(substr($last_reg, -4));
+            $new_number = $last_number + 1;
+        } else {
+            $new_number = 1;
+        }
+        $registration_no = $current_year . "-" . str_pad($new_number, 4, '0', STR_PAD_LEFT);
+        $stmt->close();
+    } else {
+        $registration_no = $data['registrationNo'];
+    }
+    // Hash password
+    $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
+    // Insert student
+    $insert_query = "INSERT INTO students (RegistrationNo, studentNo, Username, Email, PasswordHash, LastName, FirstName, Mname, ProgramCode, Level, SectionCode, AcademicYear, Semester, AccountType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Student')";
+    $stmt = $conn->prepare($insert_query);
+    $stmt->bind_param("sssssssssssss", $registration_no, $data['studentNo'], $data['username'], $data['email'], $password_hash, $data['lastName'], $data['firstName'], $data['middleName'], $data['programCode'], $data['level'], $data['sectionCode'], $data['academicYear'], $data['semester']);
+    $result = $stmt->execute();
+    if (!$result) {
+        $error = "DB error: " . $stmt->error;
+        $stmt->close();
+        return false;
+    }
+    $stmt->close();
+    return $registration_no;
+}
+
+// Helper function for updating a student
+function update_student_record($conn, $data, &$error = null) {
+    $required_fields = ['registrationNo','studentNo','username','email','lastName','firstName','programCode','level','sectionCode','academicYear','semester'];
+    foreach ($required_fields as $field) {
+        if (empty($data[$field])) {
+            $error = "Missing $field.";
+            return false;
+        }
+    }
+    // Check for duplicate studentNo or email for other students
+    $stmt = $conn->prepare("SELECT studentNo, Email FROM students WHERE (studentNo = ? OR Email = ?) AND RegistrationNo != ?");
+    $stmt->bind_param("sss", $data['studentNo'], $data['email'], $data['registrationNo']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $rowx = $result->fetch_assoc();
+        if ($rowx['studentNo'] === $data['studentNo']) {
+            $error = "Student number already exists for another student.";
+        } else {
+            $error = "Email already exists for another student.";
+        }
+        $stmt->close();
+        return false;
+    }
+    $stmt->close();
+    // Update student record
+    $update_query = "UPDATE students SET studentNo = ?, Username = ?, Email = ?, LastName = ?, FirstName = ?, Mname = ?, ProgramCode = ?, Level = ?, SectionCode = ?, AcademicYear = ?, Semester = ?";
+    $params = [
+        $data['studentNo'], $data['username'], $data['email'], $data['lastName'], $data['firstName'], $data['middleName'],
+        $data['programCode'], $data['level'], $data['sectionCode'], $data['academicYear'], $data['semester']
+    ];
+    $types = "sssssssssss";
+    if (!empty($data['password'])) {
+        $update_query .= ", PasswordHash = ?";
+        $params[] = password_hash($data['password'], PASSWORD_DEFAULT);
+        $types .= "s";
+    }
+    $update_query .= " WHERE RegistrationNo = ?";
+    $params[] = $data['registrationNo'];
+    $types .= "s";
+    $stmt = $conn->prepare($update_query);
+    $stmt->bind_param($types, ...$params);
+    $result = $stmt->execute();
+    if (!$result) {
+        $error = "DB error: " . $stmt->error;
+        $stmt->close();
+        return false;
+    }
+    $stmt->close();
+    return true;
 }
 ?>
 
@@ -1052,6 +1147,19 @@ if (isset($_SESSION['message'])) {
         background-color: #cccccc;
         cursor: not-allowed;
     }
+
+    #bulk_upload_panel .form-buttons button[name="bulk_upload_submit"] {
+        background-color: #28a745 !important; /* Green */
+        color: white;
+    }
+    #bulk_upload_panel .form-buttons button[name="bulk_upload_submit"]:hover {
+        background-color: #218838 !important;
+    }
+    #bulk_upload_panel .form-buttons button[name="bulk_upload_submit"]:disabled {
+        background-color: #a5d6a7 !important; /* Lighter green for disabled */
+        color: #fff !important;
+        opacity: 1 !important;
+    }
     </style>
 
 
@@ -1067,8 +1175,8 @@ if (isset($_SESSION['message'])) {
         let registrationNoInput;
         let studentNoInput;
         let nextRegistrationNo; // This will be populated from PHP on DOMContentLoaded
-        let bulkAddStudentActionBtn;
-        let bulkUploadContainer;
+        // let bulkAddStudentActionBtn;
+        // let bulkUploadContainer;
 
         // Global variable to store selected student data
         let selectedStudentData = null;
@@ -1078,8 +1186,9 @@ if (isset($_SESSION['message'])) {
         let studentList = [];
 
         function showAddStudentForm() {
+            document.getElementById('bulk_upload_panel').style.display = 'none';
+            document.getElementById('student_form_container').style.display = 'block';
             clearForm();
-            studentFormContainer.style.display = 'block';
             addStudentActionBtn.style.display = 'none';
             editStudentActionBtn.style.display = 'none';
             deleteStudentActionBtn.style.display = 'none';
@@ -1093,55 +1202,13 @@ if (isset($_SESSION['message'])) {
         }
 
         function showEditForm() {
+            document.getElementById('bulk_upload_panel').style.display = 'none';
+            document.getElementById('student_form_container').style.display = 'block';
             if (!selectedStudentData) {
                 alert('Please select a student to update.');
                 return;
             }
-
-            // Get all student rows from the table
-            const table = document.querySelector('table');
-            const rows = Array.from(table.querySelectorAll('tbody tr'));
-            
-            // Clear and populate studentList
-            studentList = rows.map(row => {
-                const studentDataFromAttr = JSON.parse(row.getAttribute('data-student'));
-                return {
-                    registrationNo: studentDataFromAttr.registrationNo,
-                    studentNo: studentDataFromAttr.studentNo,
-                    username: studentDataFromAttr.username,
-                    email: studentDataFromAttr.email,
-                    lastName: studentDataFromAttr.lastName,
-                    firstName: studentDataFromAttr.firstName,
-                    middleName: studentDataFromAttr.middleName,
-                    programCode: studentDataFromAttr.programCode,
-                    level: studentDataFromAttr.level,
-                    sectionCode: studentDataFromAttr.sectionCode,
-                    academicYear: studentDataFromAttr.academicYear,
-                    semester: studentDataFromAttr.semester
-                };
-            });
-
-            // Find current student index
-            currentStudentIndex = studentList.findIndex(student => 
-                student.registrationNo === selectedStudentData.registrationNo
-            );
-
-            // Show the form and buttons
-            studentFormContainer.style.display = 'block';
-            addStudentActionBtn.style.display = 'none';
-            editStudentActionBtn.style.display = 'none';
-            deleteStudentActionBtn.style.display = 'none';
-            formAddBtn.style.display = 'none';
-            formEditBtn.style.display = 'inline-block';
-            formDeleteBtn.style.display = 'none';
-            document.querySelector('.navigation-buttons').style.display = 'inline-block';
-
-            // Populate form with selected student data
-            populateForm(selectedStudentData);
-
-            // Make password fields NOT required when editing
-            document.getElementById('password').removeAttribute('required');
-            document.getElementById('confirm_password').removeAttribute('required');
+            // ...existing code...
         }
 
         function showArchiveForm() {
@@ -1287,21 +1354,7 @@ if (isset($_SESSION['message'])) {
             studentList = [];
         }
 
-        function goBackFromBulkUpload() {
-            bulkUploadContainer.style.display = 'none';
-            addStudentActionBtn.style.display = 'inline-block';
-            editStudentActionBtn.style.display = 'inline-block';
-            deleteStudentActionBtn.style.display = 'inline-block';
-        }
-
-        function showBulkAddStudentForm() {
-            studentFormContainer.style.display = 'none';
-            bulkUploadContainer.style.display = 'block';
-            addStudentActionBtn.style.display = 'none';
-            editStudentActionBtn.style.display = 'none';
-            deleteStudentActionBtn.style.display = 'none';
-            bulkAddStudentActionBtn.style.display = 'none';
-        }
+        // Remove goBackFromBulkUpload and showBulkAddStudentForm functions
 
         function filterSections() {
             const programCode = document.getElementById('program').value;
@@ -1430,27 +1483,32 @@ if (isset($_SESSION['message'])) {
             });
         }
 
+        // Ensure handleRowClick is defined globally
         function handleRowClick(event) {
             const rowElement = event.currentTarget;
-            const studentData = JSON.parse(rowElement.getAttribute('data-student'));
-            storeStudentData(
-                studentData.registrationNo,
-                studentData.studentNo,
-                studentData.username,
-                studentData.email,
-                studentData.lastName,
-                studentData.firstName,
-                studentData.middleName,
-                studentData.programCode,
-                studentData.level,
-                studentData.sectionCode,
-                studentData.academicYear,
-                studentData.semester
-            );
-            populateForm(studentData);
-            
-            // Optionally show the edit form directly after selecting
-            // showEditForm(); // Uncomment if you want to automatically show the form
+            try {
+                const studentData = JSON.parse(rowElement.getAttribute('data-student'));
+                console.log('Row clicked, studentData:', studentData);
+                storeStudentData(
+                    studentData.registrationNo,
+                    studentData.studentNo,
+                    studentData.username,
+                    studentData.email,
+                    studentData.lastName,
+                    studentData.firstName,
+                    studentData.middleName,
+                    studentData.programCode,
+                    studentData.level,
+                    studentData.sectionCode,
+                    studentData.academicYear,
+                    studentData.semester
+                );
+                // Visually highlight the selected row
+                document.querySelectorAll('.student-list tbody tr').forEach(tr => tr.classList.remove('selected-row'));
+                rowElement.classList.add('selected-row');
+            } catch (e) {
+                console.error('Error in handleRowClick:', e);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1459,8 +1517,8 @@ if (isset($_SESSION['message'])) {
             editStudentActionBtn = document.getElementById('edit_student_action_btn');
             deleteStudentActionBtn = document.getElementById('delete_student_action_btn');
             studentFormContainer = document.getElementById('student_form_container');
-            bulkAddStudentActionBtn = document.getElementById('bulk_add_student_action_btn');
-            bulkUploadContainer = document.getElementById('bulk_upload_container');
+            // bulkAddStudentActionBtn = document.getElementById('bulk_add_student_action_btn');
+            // bulkUploadContainer = document.getElementById('bulk_upload_container');
 
             formAddBtn = document.getElementById('form_add_student_btn');
             formEditBtn = document.getElementById('form_edit_student_btn');
@@ -1495,162 +1553,7 @@ if (isset($_SESSION['message'])) {
                 deleteStudentActionBtn.addEventListener('click', showArchiveForm);
             }
 
-            if (bulkAddStudentActionBtn) {
-                bulkAddStudentActionBtn.addEventListener('click', showBulkAddStudentForm);
-            }
-
-            // Handle bulk upload form submission
-            const bulkUploadForm = document.getElementById('bulk_upload_form');
-            if (bulkUploadForm) {
-                bulkUploadForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Prevent default form submission
-
-                    const formData = new FormData(this); // Get form data
-
-                    fetch(this.action, { // Use the form's action attribute
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            displayMessage(data.message, data.message_type);
-                            if (data.success) {
-                                goBackFromBulkUpload(); // Hide bulk upload form and show main buttons
-                                refreshStudentList(); // Refresh the main student list
-                            } else {
-                                // Stay on the form to allow user to fix errors, if any
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            displayMessage('An unexpected error occurred during bulk upload.', 'error');
-                        });
-                });
-            }
-
-            // Handle form submission for add, edit, and archive
-            const studentForm = document.getElementById('student_form');
-            if (studentForm) {
-                studentForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Prevent default form submission
-
-                    const formData = new FormData(this); // Get form data
-                    let action = '';
-                    if (formAddBtn.style.display === 'inline-block') {
-                        action = 'add_student';
-                    } else if (formEditBtn.style.display === 'inline-block') {
-                        action = 'edit_student';
-                    } else if (formDeleteBtn.style.display === 'inline-block') {
-                        action = 'archive_student';
-                    }
-                    formData.append(action, '1'); // Indicate the action
-
-                    fetch('student_management.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            displayMessage(data.message, data.message_type);
-                            if (data.success) {
-                                clearForm();
-                                goBack(); // Go back to main view
-                                refreshStudentList();
-                            } else {
-                                // Stay on the form to allow user to fix errors
-                                // No specific action needed here as form stays open
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            displayMessage('An unexpected error occurred.', 'error');
-                        });
-                });
-            }
-
-            // Section filtering logic
-            const programSelect = document.getElementById('program');
-            const levelSelect = document.getElementById('level');
-            const sectionSelect = document.getElementById('section');
-
-            function filterSections() {
-                const selectedProgram = programSelect.value;
-                const selectedLevel = levelSelect.value;
-                console.log('Filtering sections for program:', selectedProgram, 'and level:', selectedLevel);
-
-                if (selectedProgram && selectedLevel) {
-                    fetch(`get_sections.php?program_code=${selectedProgram}&level=${selectedLevel}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(sections => {
-                            console.log('Received sections:', sections);
-                            sectionSelect.innerHTML = '<option value="">Select Section</option>';
-                            sections.forEach(section => {
-                                const option = document.createElement('option');
-                                option.value = section.SectionCode;
-                                option.textContent = `${section.SectionTitle} (${section.ProgramTitle})`;
-                                sectionSelect.appendChild(option);
-                            });
-                            // If a student is selected and has a section, try to set it
-                            if (selectedStudentData && selectedStudentData.sectionCode) {
-                                sectionSelect.value = selectedStudentData.sectionCode;
-                            }
-                        })
-                        .catch(error => console.error('Error fetching sections:', error));
-                } else {
-                    sectionSelect.innerHTML = '<option value="">Select Section</option>';
-                }
-            }
-
-            if (programSelect) {
-                programSelect.addEventListener('change', filterSections);
-            }
-            if (levelSelect) {
-                levelSelect.addEventListener('change', filterSections);
-            }
-
-            // Initial load of sections if both year level and program are selected
-            if (programSelect && levelSelect && programSelect.value && levelSelect.value) {
-                console.log('Calling filterSections from DOMContentLoaded');
-                filterSections();
-            }
-
-            // Add password validation
-            document.getElementById('confirm_password').addEventListener('input', function() {
-                const passwordInput = document.getElementById('password');
-                const confirmPasswordInput = this;
-                
-                // Only validate if password fields are not empty
-                if (passwordInput.value || confirmPasswordInput.value) {
-                    if (passwordInput.value !== confirmPasswordInput.value) {
-                        confirmPasswordInput.setCustomValidity('Passwords do not match');
-                    } else {
-                        confirmPasswordInput.setCustomValidity('');
-                    }
-                } else {
-                    confirmPasswordInput.setCustomValidity(''); // Clear validation if both are empty
-                }
-            });
-
-            document.getElementById('password').addEventListener('input', function() {
-                const passwordInput = this;
-                const confirmPasswordInput = document.getElementById('confirm_password');
-
-                // Only validate if password fields are not empty
-                if (passwordInput.value || confirmPasswordInput.value) {
-                    if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
-                        confirmPasswordInput.setCustomValidity('Passwords do not match');
-                    } else {
-                        confirmPasswordInput.setCustomValidity('');
-                    }
-                } else {
-                    confirmPasswordInput.setCustomValidity(''); // Clear validation if both are empty
-                }
-            });
+            // Remove bulk upload event listeners and logic
         });
 
         function resetFilters() {
@@ -1688,6 +1591,89 @@ if (isset($_SESSION['message'])) {
                     });
             }
         }
+
+        // Bulk upload logic
+        if (isset($_POST['bulk_upload_submit']) && isset($_FILES['csv_file'])) {
+            $file = $_FILES['csv_file']['tmp_name'];
+            $handle = fopen($file, 'r');
+            $bulk_upload_message = '';
+            $success = 0;
+            $errors = [];
+            if (!$handle) {
+                $bulk_upload_message = 'Failed to open uploaded file.';
+            } else {
+                $header = fgetcsv($handle);
+                $expected = ['studentNo','username','email','password','lastName','firstName','middleName','programCode','level','sectionCode','academicYear','semester'];
+                if ($header !== $expected) {
+                    $bulk_upload_message = 'CSV header does not match expected columns.';
+                } else {
+                    $rowNum = 1;
+                    while (($row = fgetcsv($handle)) !== false) {
+                        $rowNum++;
+                        $data = array_combine($expected, $row);
+                        // Validate required fields
+                        foreach (['studentNo','username','email','password','lastName','firstName','programCode','level','sectionCode','academicYear','semester'] as $field) {
+                            if (empty($data[$field])) {
+                                $errors[] = "Row $rowNum: Missing $field.";
+                                continue 2;
+                            }
+                        }
+                        // Check for duplicate studentNo or email
+                        $stmt = $conn->prepare("SELECT studentNo, Email FROM students WHERE studentNo = ? OR Email = ?");
+                        $stmt->bind_param("ss", $data['studentNo'], $data['email']);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if ($result->num_rows > 0) {
+                            $rowx = $result->fetch_assoc();
+                            if ($rowx['studentNo'] === $data['studentNo']) {
+                                $errors[] = "Row $rowNum: Student number already exists.";
+                            } else {
+                                $errors[] = "Row $rowNum: Email already exists.";
+                            }
+                            $stmt->close();
+                            continue;
+                        }
+                        $stmt->close();
+                        // Generate RegistrationNo
+                        $current_year = date('Y');
+                        $last_reg_query = "SELECT RegistrationNo FROM students WHERE RegistrationNo LIKE ? ORDER BY RegistrationNo DESC LIMIT 1";
+                        $stmt = $conn->prepare($last_reg_query);
+                        $year_pattern = $current_year . "-%";
+                        $stmt->bind_param("s", $year_pattern);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if ($result->num_rows > 0) {
+                            $last_reg = $result->fetch_assoc()['RegistrationNo'];
+                            $last_number = intval(substr($last_reg, -4));
+                            $new_number = $last_number + 1;
+                        } else {
+                            $new_number = 1;
+                        }
+                        $registration_no = $current_year . "-" . str_pad($new_number, 4, '0', STR_PAD_LEFT);
+                        $stmt->close();
+                        // Hash password
+                        $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
+                        // Insert student
+                        $insert_query = "INSERT INTO students (RegistrationNo, studentNo, Username, Email, PasswordHash, LastName, FirstName, Mname, ProgramCode, Level, SectionCode, AcademicYear, Semester, AccountType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Student')";
+                        $stmt = $conn->prepare($insert_query);
+                        $stmt->bind_param("sssssssssssss", $registration_no, $data['studentNo'], $data['username'], $data['email'], $password_hash, $data['lastName'], $data['firstName'], $data['middleName'], $data['programCode'], $data['level'], $data['sectionCode'], $data['academicYear'], $data['semester']);
+                        if ($stmt->execute()) {
+                            $success++;
+                        } else {
+                            $errors[] = "Row $rowNum: DB error: " . $stmt->error;
+                        }
+                        $stmt->close();
+                    }
+                    fclose($handle);
+                }
+            }
+            $bulk_upload_message = "$success students added successfully.";
+            if ($errors) $bulk_upload_message .= '<br>Errors:<br>' . implode('<br>', $errors);
+            $_SESSION['message'] = $bulk_upload_message;
+            $_SESSION['message_type'] = ($success > 0 && count($errors) == 0) ? 'success' : 'error';
+            header('Location: student_management.php');
+            exit();
+        }
     </script>
 </head>
 <body>
@@ -1723,34 +1709,10 @@ if (isset($_SESSION['message'])) {
     <?php endif; ?>
     
     <div class="action-buttons">
-        <button type="button" class="add-btn" id="add_student_action_btn">Add New Student</button>
-        <button type="button" class="add-btn" id="bulk_add_student_action_btn">Bulk Add New Student</button>
-        <button type="button" class="edit-btn" id="edit_student_action_btn">Update Student</button>
+        <button type="button" class="add-btn" id="add_student_action_btn" onclick="showAddStudentPanel()">Add New Student</button>
         <button type="button" class="delete-btn" id="delete_student_action_btn" onclick="window.location.href='archived_students.php'">View Archived Students</button>
+        <button type="button" class="add-btn" onclick="showBulkUploadPanel();" style="background-color:#343079;"><i class="fas fa-file-csv"></i> Bulk Upload</button>
     </div>
-    
-    <div class="user-panel" id="bulk_upload_container" style="display:none;">
-        <h3>Bulk Add Students (CSV Upload)</h3>
-        <form method="POST" id="bulk_upload_form" enctype="multipart/form-data" action="../process_bulk_upload.php">
-            <p>Please upload a CSV file with student data. The CSV should have the following headers (case-sensitive):</p>
-            <pre><code>studentNo,username,email,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester</code></pre>
-            <p>Example CSV content:</p>
-            <pre><code>studentNo,username,email,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester
-2023-0001,john.doe,john.doe@example.com,Doe,John,Smith,BSIT,1,BSIT1A,2024-2025,First Semester
-2023-0002,jane.smith,jane.smith@example.com,Smith,Jane,Marie,BSIT,1,BSIT1A,2024-2025,First Semester</code></pre>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="csv_file">Upload CSV File:</label>
-                    <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
-                </div>
-            </div>
-            <div class="form-buttons">
-                <button type="submit" name="upload_csv" id="form_upload_csv_btn">Upload and Add Students</button>
-                <button type="button" onclick="goBackFromBulkUpload();" class="back-btn">Back</button>
-            </div>
-        </form>
-    </div>
-
     
     <div class="user-panel" id="student_form_container">
         <h3>Student Information</h3>
@@ -1869,7 +1831,7 @@ if (isset($_SESSION['message'])) {
                 <button type="submit" name="edit_student" id="form_edit_student_btn" style="display:none;">Update</button>
                 <button type="submit" name="archive_student" id="form_delete_student_btn">Archive</button>
                 <button type="button" onclick="clearForm();">Clear</button>
-                <button type="button" onclick="goBack();" class="back-btn">Back</button>
+                <button type="button" onclick="hideStudentPanel();" class="back-btn">Back</button>
                 <div class="navigation-buttons" style="display:none;">
                     <button type="button" onclick="navigateStudent('prev')" class="nav-btn">Previous</button>
                     <button type="button" onclick="navigateStudent('next')" class="nav-btn">Next</button>
@@ -1967,7 +1929,7 @@ if (isset($_SESSION['message'])) {
             </div>
             <div class="filter-buttons">
                 <button type="submit" name="apply_filters" class="apply-btn">Apply Filters</button>
-                <button type="button" onclick="resetFilters()" class="reset-btn">Reset</button>
+                <button type="button" onclick="window.location.href='student_management.php'" class="reset-btn">Reset</button>
             </div>
         </form>
     </div>
@@ -2032,10 +1994,10 @@ if (isset($_SESSION['message'])) {
                                 <td><?php echo htmlspecialchars($row['Semester']); ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex space-x-2">
-                                        <button onclick="archiveStudent('<?php echo $row['RegistrationNo']; ?>')" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                                        <button onclick="event.stopPropagation(); archiveStudent('<?php echo $row['RegistrationNo']; ?>')" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                                             Archive
                                         </button>
-                                        <button onclick="viewStudent('<?php echo $row['RegistrationNo']; ?>')" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        <button type="button" onclick="event.stopPropagation(); viewStudentFromTable(this)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                                             View
                                         </button>
                                     </div>
@@ -2055,5 +2017,222 @@ if (isset($_SESSION['message'])) {
         </table>
     </div>
 </div>
+
+    <div class="user-panel" id="bulk_upload_panel" style="display:none;">
+        <h3>Bulk Upload Students (CSV)</h3>
+        <?php if (isset($bulk_upload_message)): ?>
+            <div class="alert"><?php echo $bulk_upload_message; ?></div>
+        <?php endif; ?>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="csv_file">Select CSV File:</label>
+                    <input type="file" name="csv_file" id="csv_file" accept=".csv" required>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button type="submit" name="bulk_upload_submit"><i class="fas fa-upload"></i> Upload</button>
+                <button type="button" class="back-btn" onclick="hideBulkUploadPanel();"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+        </form>
+        <p style="margin-top:20px;">CSV columns: <code>studentNo,username,email,password,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester</code></p>
+        <p>Example:</p>
+        <pre style="background:#f8f8f8;padding:10px;border-radius:6px;">studentNo,username,email,password,lastName,firstName,middleName,programCode,level,sectionCode,academicYear,semester
+2025-0001,jdoe,jdoe@email.com,Password123!,Doe,John,Michael,BSCS,1,BSCS1A,2024-2025,First Semester
+2025-0002,asmith,asmith@email.com,Password456!,Smith,Anna,Marie,BSIT,2,BSIT2B,2024-2025,Second Semester</pre>
+</div>
 </body>
 </html>
+
+<script>
+// --- GLOBAL JS FUNCTIONS FOR STUDENT MANAGEMENT ---
+
+// Store selected student data globally
+let selectedStudentData = null;
+
+function handleRowClick(event) {
+    const rowElement = event.currentTarget;
+    try {
+        const studentData = JSON.parse(rowElement.getAttribute('data-student'));
+        console.log('Row clicked, studentData:', studentData);
+        storeStudentData(
+            studentData.registrationNo,
+            studentData.studentNo,
+            studentData.username,
+            studentData.email,
+            studentData.lastName,
+            studentData.firstName,
+            studentData.middleName,
+            studentData.programCode,
+            studentData.level,
+            studentData.sectionCode,
+            studentData.academicYear,
+            studentData.semester
+        );
+        document.querySelectorAll('.student-list tbody tr').forEach(tr => tr.classList.remove('selected-row'));
+        rowElement.classList.add('selected-row');
+    } catch (e) {
+        console.error('Error in handleRowClick:', e);
+    }
+}
+
+function viewStudentFromTable(btn) {
+    const row = btn.closest('tr');
+    if (!row) return;
+    handleRowClick({ currentTarget: row });
+    showEditStudentPanel();
+}
+
+function archiveStudent(registrationNo) {
+    if (confirm('Are you sure you want to archive this student?')) {
+        fetch('student_management.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=archive_student&registration_no=' + registrationNo
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.href = 'archived_students.php';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert('An error occurred while archiving the student.');
+        });
+    }
+}
+
+function storeStudentData(registrationNo, studentNo, username, email, lastName, firstName, middleName, programCode, level, sectionCode, academicYear, semester) {
+    selectedStudentData = {
+        registrationNo: registrationNo,
+        studentNo: studentNo,
+        username: username,
+        email: email,
+        lastName: lastName,
+        firstName: firstName,
+        middleName: middleName,
+        programCode: programCode,
+        level: level,
+        sectionCode: sectionCode,
+        academicYear: academicYear,
+        semester: semester
+    };
+    console.log('storeStudentData set:', selectedStudentData);
+}
+
+function populateForm(data) {
+    document.getElementById('registration_no').value = data.registrationNo;
+    document.getElementById('student_no').value = data.studentNo;
+    document.getElementById('username').value = data.username;
+    document.getElementById('email').value = data.email;
+    document.getElementById('last_name').value = data.lastName;
+    document.getElementById('first_name').value = data.firstName;
+    document.getElementById('middle_name').value = data.middleName || '';
+    document.getElementById('program').value = data.programCode;
+    document.getElementById('section').value = data.sectionCode;
+    document.getElementById('academic_year').value = data.academicYear;
+    document.getElementById('semester').value = data.semester;
+    document.getElementById('level').value = data.level;
+    document.getElementById('password').value = '';
+    document.getElementById('confirm_password').value = '';
+    document.getElementById('registration_no_for_action').value = data.registrationNo;
+    console.log('populateForm called with:', data);
+}
+
+function showEditStudentPanel() {
+    if (!selectedStudentData) {
+        alert('Please select a student to update.');
+        return;
+    }
+    populateForm(selectedStudentData);
+    document.getElementById('student_form_container').style.display = 'block';
+    document.getElementById('bulk_upload_panel').style.display = 'none';
+    document.getElementById('form_add_student_btn').style.display = 'none';
+    document.getElementById('form_edit_student_btn').style.display = 'inline-block';
+    document.getElementById('form_delete_student_btn').style.display = 'none';
+    document.getElementById('password').removeAttribute('required');
+    document.getElementById('confirm_password').removeAttribute('required');
+    console.log('showEditStudentPanel: form shown for update');
+}
+
+function showBulkUploadPanel() {
+    document.getElementById('bulk_upload_panel').style.display = 'block';
+    document.getElementById('student_form_container').style.display = 'none';
+}
+function hideBulkUploadPanel() {
+    document.getElementById('bulk_upload_panel').style.display = 'none';
+    document.getElementById('student_form_container').style.display = 'block';
+}
+function showAddStudentPanel() {
+    document.getElementById('student_form_container').style.display = 'block';
+    document.getElementById('bulk_upload_panel').style.display = 'none';
+}
+function hideStudentPanel() {
+    document.getElementById('student_form_container').style.display = 'none';
+}
+// --- END GLOBAL JS FUNCTIONS ---
+
+// --- GLOBAL JS FUNCTIONS FOR STUDENT MANAGEMENT ---
+// ... existing functions ...
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Intercept student form submit for AJAX
+    const studentForm = document.getElementById('student_form');
+    if (studentForm) {
+        studentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(studentForm);
+            // Determine which button was clicked
+            let action = '';
+            if (document.activeElement && document.activeElement.name) {
+                action = document.activeElement.name;
+            } else {
+                // fallback: check for visible button
+                if (document.getElementById('form_add_student_btn').style.display !== 'none') action = 'add_student';
+                else if (document.getElementById('form_edit_student_btn').style.display !== 'none') action = 'edit_student';
+                else if (document.getElementById('form_delete_student_btn').style.display !== 'none') action = 'archive_student';
+            }
+            if (action) formData.append('action', action);
+            fetch('student_management.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showStudentFormMessage(data.message, data.success ? 'success' : 'error');
+                if (data.success && action === 'add_student') {
+                    studentForm.reset();
+                }
+                // Optionally, refresh the student list here
+            })
+            .catch(error => {
+                showStudentFormMessage('An error occurred. Please try again.', 'error');
+            });
+        });
+    }
+});
+
+function showStudentFormMessage(message, type) {
+    // Remove any existing alert
+    const oldAlert = document.querySelector('#student_form_container .alert');
+    if (oldAlert) oldAlert.remove();
+    // Create new alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert ' + (type === 'success' ? 'alert-success' : 'alert-error');
+    alertDiv.textContent = message;
+    // Insert at the top of the form container
+    const container = document.getElementById('student_form_container');
+    if (container) {
+        container.insertBefore(alertDiv, container.firstChild);
+    }
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+// --- END GLOBAL JS FUNCTIONS ---
+</script>
