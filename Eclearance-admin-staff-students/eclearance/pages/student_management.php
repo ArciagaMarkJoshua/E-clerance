@@ -1160,6 +1160,18 @@ function update_student_record($conn, $data, &$error = null) {
         color: #fff !important;
         opacity: 1 !important;
     }
+
+    /* Add CSS for required field indicators */
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .required-field {
+        color: #333;
+        font-weight: 500;
+    }
     </style>
 
 
@@ -1723,38 +1735,52 @@ function update_student_record($conn, $data, &$error = null) {
                     <input type="text" id="registration_no" name="registration_no" value="<?php echo htmlspecialchars($next_registration_no); ?>" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="student_no">Student No.:</label>
+                    <label for="student_no" class="required-field">Student No.:</label>
                     <input type="text" id="student_no" name="student_no" value="" required>
                     <input type="hidden" id="registration_no_for_action" name="registration_no_for_action" value="">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="username">Username:</label>
+                    <label for="username" class="required-field">Username:</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="email" class="required-field">Email:</label>
+                    <input type="email" id="email" name="email" 
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
+                           title="Please enter a valid email address (e.g., user@example.com)"
+                           required>
+                    <small class="form-text text-muted" id="email-feedback">Enter a valid email address</small>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password">
+                    <label for="password" class="required-field">Password:</label>
+                    <input type="password" id="password" name="password" 
+                           pattern="^(?=.*[A-Z])(?=.*\d).{8,}$" 
+                           minlength="8" 
+                           title="Password must be at least 8 characters long and contain at least one uppercase letter and one number"
+                           required>
+                    <small class="form-text text-muted">Password must be at least 8 characters with uppercase letter and number</small>
                 </div>
                 <div class="form-group">
-                    <label for="confirm_password">Confirm Password:</label>
-                    <input type="password" id="confirm_password" name="confirm_password">
+                    <label for="confirm_password" class="required-field">Confirm Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" 
+                           pattern="^(?=.*[A-Z])(?=.*\d).{8,}$" 
+                           minlength="8" 
+                           title="Password must be at least 8 characters long and contain at least one uppercase letter and one number"
+                           required>
+                    <small class="form-text text-muted">Password must be at least 8 characters with uppercase letter and number</small>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="last_name">Last Name:</label>
+                    <label for="last_name" class="required-field">Last Name:</label>
                     <input type="text" id="last_name" name="last_name" required>
                 </div>
                 <div class="form-group">
-                    <label for="first_name">First Name:</label>
+                    <label for="first_name" class="required-field">First Name:</label>
                     <input type="text" id="first_name" name="first_name" required>
                 </div>
             </div>
@@ -1766,7 +1792,7 @@ function update_student_record($conn, $data, &$error = null) {
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Program</label>
+                    <label class="required-field">Program</label>
                     <select id="program" name="program" required>
                         <option value="">Select Program</option>
                         <?php 
@@ -1777,7 +1803,7 @@ function update_student_record($conn, $data, &$error = null) {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Section</label>
+                    <label class="required-field">Section</label>
                     <select id="section" name="section" required>
                         <option value="">Select Section</option>
                         <?php 
@@ -1790,7 +1816,7 @@ function update_student_record($conn, $data, &$error = null) {
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Academic Year</label>
+                    <label class="required-field">Academic Year</label>
                     <select id="academic_year" name="academic_year" required>
                         <option value="">Select Academic Year</option>
                         <?php 
@@ -1802,7 +1828,7 @@ function update_student_record($conn, $data, &$error = null) {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Semester</label>
+                    <label class="required-field">Semester</label>
                     <select id="semester" name="semester" required>
                         <option value="">Select Semester</option>
                         <?php 
@@ -1815,7 +1841,7 @@ function update_student_record($conn, $data, &$error = null) {
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Level</label>
+                    <label class="required-field">Level</label>
                     <select id="level" name="level" required>
                         <option value="">Select Level</option>
                         <?php 
@@ -2235,4 +2261,110 @@ function showStudentFormMessage(message, type) {
     }, 5000);
 }
 // --- END GLOBAL JS FUNCTIONS ---
+
+// Add password validation function
+function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    
+    return password.length >= minLength && hasUpperCase && hasNumber;
+}
+
+// Add email validation function
+function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+}
+
+// Add event listeners for password validation
+document.addEventListener('DOMContentLoaded', function() {
+    // Email validation
+    const emailInput = document.getElementById('email');
+    const emailFeedback = document.getElementById('email-feedback');
+    
+    if (emailInput) {
+        emailInput.addEventListener('input', function() {
+            const email = this.value;
+            
+            if (email.length > 0) {
+                if (validateEmail(email)) {
+                    this.style.borderColor = '#28a745';
+                    emailFeedback.style.color = '#28a745';
+                    emailFeedback.textContent = '✓ Valid email address';
+                } else {
+                    this.style.borderColor = '#dc3545';
+                    emailFeedback.style.color = '#dc3545';
+                    emailFeedback.textContent = '✗ Please enter a valid email address';
+                }
+            } else {
+                this.style.borderColor = '#ddd';
+                emailFeedback.style.color = '#6c757d';
+                emailFeedback.textContent = 'Enter a valid email address';
+            }
+        });
+        
+        // Also validate on blur
+        emailInput.addEventListener('blur', function() {
+            const email = this.value;
+            if (email.length > 0 && !validateEmail(email)) {
+                this.style.borderColor = '#dc3545';
+                emailFeedback.style.color = '#dc3545';
+                emailFeedback.textContent = '✗ Please enter a valid email address';
+            }
+        });
+    }
+    
+    // Password validation
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            const isValid = validatePassword(password);
+            
+            if (password.length > 0) {
+                if (isValid) {
+                    this.style.borderColor = '#28a745';
+                    this.nextElementSibling.style.color = '#28a745';
+                    this.nextElementSibling.textContent = '✓ Password meets requirements';
+                } else {
+                    this.style.borderColor = '#dc3545';
+                    this.nextElementSibling.style.color = '#dc3545';
+                    this.nextElementSibling.textContent = '✗ Password must be at least 8 characters with uppercase letter and number';
+                }
+            } else {
+                this.style.borderColor = '#ddd';
+                this.nextElementSibling.style.color = '#6c757d';
+                this.nextElementSibling.textContent = 'Password must be at least 8 characters with uppercase letter and number';
+            }
+        });
+    }
+    
+    if (confirmPasswordInput) {
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword.length > 0) {
+                if (password === confirmPassword) {
+                    this.style.borderColor = '#28a745';
+                    this.nextElementSibling.style.color = '#28a745';
+                    this.nextElementSibling.textContent = '✓ Passwords match';
+                } else {
+                    this.style.borderColor = '#dc3545';
+                    this.nextElementSibling.style.color = '#dc3545';
+                    this.nextElementSibling.textContent = '✗ Passwords do not match';
+                }
+            } else {
+                this.style.borderColor = '#ddd';
+                this.nextElementSibling.style.color = '#6c757d';
+                this.nextElementSibling.textContent = 'Password must be at least 8 characters with uppercase letter and number';
+            }
+        });
+    }
+});
+
+// --- END GLOBAL JS FUNCTIONS FOR STUDENT MANAGEMENT ---
 </script>

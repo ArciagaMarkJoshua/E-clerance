@@ -167,7 +167,9 @@ INSERT INTO `clearance_requirements` (`requirement_id`, `requirement_name`, `des
 (4, 'Financial Clearance', 'Settle all financial obligations', 1, 4),
 (5, 'Registrar Clearance', 'Submit all required documents to registrar', 1, 5),
 (6, 'Property Clearance', 'Return all school property', 1, 6),
-(7, 'Student Council Clearance', 'Complete student organization obligations', 1, 7);
+(7, 'Student Council Clearance', 'Complete student organization obligations', 1, 7),
+(8, 'Medical Clearance', 'Complete medical examination and health check', 1, 8),
+(9, 'MSO Clearance', 'Complete MSO requirements and documentation', 1, 9);
 
 -- --------------------------------------------------------
 
@@ -191,7 +193,9 @@ INSERT INTO `departments` (`DepartmentID`, `DepartmentName`) VALUES
 (4, 'Office of the Finance Director'),
 (5, 'Office of the Registrar'),
 (6, 'Property Custodian'),
-(7, 'Student Council');
+(7, 'Student Council'),
+(8, 'Clinic'),
+(9, 'MSO');
 
 -- --------------------------------------------------------
 
@@ -255,7 +259,10 @@ INSERT INTO `offices` (`OfficeID`, `OfficeName`, `DepartmentID`, `Description`) 
 (4, 'CBA Property Custodian', 6, 'Property Custodian for College of Business Administration'),
 (5, 'CCS Student Council', 7, 'Student Council for College of Computer Studies'),
 (6, 'CBA Student Council', 7, 'Student Council for College of Business Administration'),
-(7, 'BBA', 6, 'Property - BBA');
+(7, 'BBA', 6, 'Property - BBA'),
+(8, 'Main Clinic', 8, 'Main Medical Clinic for student health services'),
+(9, 'MSO Office', 9, 'Main MSO Office for student organization services'),
+(10, 'Health Services Unit', 8, 'Health Services Unit for medical clearance');
 
 -- --------------------------------------------------------
 
@@ -415,7 +422,9 @@ CREATE TABLE `staff` (
 
 INSERT INTO `staff` (`RegistrationNo`, `StaffID`, `Username`, `Email`, `PasswordHash`, `LastName`, `FirstName`, `Mname`, `Department`, `AccountType`, `LastLogin`, `IsActive`) VALUES
 ('2025-000', 1, 'admin1', 'admin@dyci.edu.ph', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'ADMIN', 'Admin', 'CCS Property Custodian', 'Admin', NULL, 1),
-('2025-001', 321, '123213', 'arciagamarkjoshua@gmail.com', '$2y$10$0TQS2RdMQHxdRoxaKPKzhOSlF247mP198sLeeYvfDN3FFXRukqQ4W', 'mark', 'arcy', 'dean', 'CBA Office', 'Staff', NULL, 1);
+('2025-001', 321, '123213', 'arciagamarkjoshua@gmail.com', '$2y$10$0TQS2RdMQHxdRoxaKPKzhOSlF247mP198sLeeYvfDN3FFXRukqQ4W', 'mark', 'arcy', 'dean', 'CBA Office', 'Staff', NULL, 1),
+('2025-002', 322, 'clinic_staff', 'clinic@dyci.edu.ph', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Santos', 'Maria', 'Cruz', 'Main Clinic', 'Staff', NULL, 1),
+('2025-003', 323, 'mso_staff', 'mso@dyci.edu.ph', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Garcia', 'Juan', 'Delos', 'MSO Office', 'Staff', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -671,13 +680,13 @@ ALTER TABLE `clearance`
 -- AUTO_INCREMENT for table `clearance_requirements`
 --
 ALTER TABLE `clearance_requirements`
-  MODIFY `requirement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `requirement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
-  MODIFY `DepartmentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `DepartmentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `levels`
@@ -695,7 +704,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `offices`
 --
 ALTER TABLE `offices`
-  MODIFY `OfficeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `OfficeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `registration_requests`
@@ -754,26 +763,4 @@ ALTER TABLE `sections`
 -- Constraints for table `students`
 --
 ALTER TABLE `students`
-  ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`ProgramCode`) REFERENCES `programs` (`ProgramCode`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `students_ibfk_2` FOREIGN KEY (`Level`) REFERENCES `levels` (`LevelID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `students_ibfk_3` FOREIGN KEY (`SectionCode`) REFERENCES `sections` (`SectionCode`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `student_clearance_status`
---
-ALTER TABLE `student_clearance_status`
-  ADD CONSTRAINT `student_clearance_status_ibfk_1` FOREIGN KEY (`studentNo`) REFERENCES `students` (`studentNo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `student_clearance_status_ibfk_2` FOREIGN KEY (`requirement_id`) REFERENCES `clearance_requirements` (`requirement_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `student_clearance_status_ibfk_3` FOREIGN KEY (`StaffID`) REFERENCES `staff` (`StaffID`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `student_requirement_descriptions`
---
-ALTER TABLE `student_requirement_descriptions`
-  ADD CONSTRAINT `student_requirement_descriptions_ibfk_1` FOREIGN KEY (`studentNo`) REFERENCES `students` (`studentNo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `student_requirement_descriptions_ibfk_2` FOREIGN KEY (`requirement_id`) REFERENCES `clearance_requirements` (`requirement_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+  ADD CONSTRAINT `

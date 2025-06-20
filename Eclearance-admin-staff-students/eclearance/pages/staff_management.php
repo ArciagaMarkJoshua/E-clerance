@@ -783,6 +783,18 @@ $result = $conn->query($sql);
         from { opacity: 1; }
         to { opacity: 0; }
     }
+
+    /* Add CSS for required field indicators */
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .required-field {
+        color: #333;
+        font-weight: 500;
+    }
 </style>
     <script>
         function selectUser(registrationNo, staffId, username, lastName, firstName, middleName, email, departmentValue, accountType) {
@@ -970,24 +982,117 @@ $result = $conn->query($sql);
             document.getElementById('filterSortForm').submit(); // Submit the form to apply reset
         }
 
-        // Add password validation (client-side)
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirm_password');
-
-        function validatePasswords() {
-            if (confirmPasswordInput.value === '') {
-                confirmPasswordInput.setCustomValidity('');
-                return;
-            }
-            if (passwordInput.value !== confirmPasswordInput.value) {
-                confirmPasswordInput.setCustomValidity('Passwords do not match');
-            } else {
-                confirmPasswordInput.setCustomValidity('');
-            }
+        // Add password validation function
+        function validatePassword(password) {
+            const minLength = 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            
+            return password.length >= minLength && hasUpperCase && hasNumber;
         }
+        
+        // Add event listeners for password validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    const isValid = validatePassword(password);
+                    
+                    if (password.length > 0) {
+                        if (isValid) {
+                            this.style.borderColor = '#28a745';
+                            this.nextElementSibling.style.color = '#28a745';
+                            this.nextElementSibling.textContent = '✓ Password meets requirements';
+                        } else {
+                            this.style.borderColor = '#dc3545';
+                            this.nextElementSibling.style.color = '#dc3545';
+                            this.nextElementSibling.textContent = '✗ Password must be at least 8 characters with uppercase letter and number';
+                        }
+                    } else {
+                        this.style.borderColor = '#ddd';
+                        this.nextElementSibling.style.color = '#6c757d';
+                        this.nextElementSibling.textContent = 'Password must be at least 8 characters with uppercase letter and number';
+                    }
+                });
+            }
+            
+            if (confirmPasswordInput) {
+                confirmPasswordInput.addEventListener('input', function() {
+                    const password = passwordInput.value;
+                    const confirmPassword = this.value;
+                    
+                    if (confirmPassword.length > 0) {
+                        if (password === confirmPassword) {
+                            this.style.borderColor = '#28a745';
+                            this.nextElementSibling.style.color = '#28a745';
+                            this.nextElementSibling.textContent = '✓ Passwords match';
+                        } else {
+                            this.style.borderColor = '#dc3545';
+                            this.nextElementSibling.style.color = '#dc3545';
+                            this.nextElementSibling.textContent = '✗ Passwords do not match';
+                        }
+                    } else {
+                        this.style.borderColor = '#ddd';
+                        this.nextElementSibling.style.color = '#6c757d';
+                        this.nextElementSibling.textContent = 'Password must be at least 8 characters with uppercase letter and number';
+                    }
+                });
+            }
+        });
 
-        passwordInput.addEventListener('input', validatePasswords);
-        confirmPasswordInput.addEventListener('input', validatePasswords);
+        // Add email validation function
+        function validateEmail(email) {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(email);
+        }
+        
+        // Add event listeners for email validation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Email validation
+            const emailInput = document.getElementById('email');
+            const emailFeedback = document.getElementById('email-feedback');
+            
+            if (emailInput) {
+                emailInput.addEventListener('input', function() {
+                    const email = this.value;
+                    
+                    if (email.length > 0) {
+                        if (validateEmail(email)) {
+                            this.style.borderColor = '#28a745';
+                            emailFeedback.style.color = '#28a745';
+                            emailFeedback.textContent = '✓ Valid email address';
+                        } else {
+                            this.style.borderColor = '#dc3545';
+                            emailFeedback.style.color = '#dc3545';
+                            emailFeedback.textContent = '✗ Please enter a valid email address';
+                        }
+                    } else {
+                        this.style.borderColor = '#ddd';
+                        emailFeedback.style.color = '#6c757d';
+                        emailFeedback.textContent = 'Enter a valid email address';
+                    }
+                });
+                
+                // Also validate on blur
+                emailInput.addEventListener('blur', function() {
+                    const email = this.value;
+                    if (email.length > 0 && !validateEmail(email)) {
+                        this.style.borderColor = '#dc3545';
+                        emailFeedback.style.color = '#dc3545';
+                        emailFeedback.textContent = '✗ Please enter a valid email address';
+                    }
+                });
+            }
+            
+            // Password validation
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+        });
+        
+        // --- END GLOBAL JS FUNCTIONS FOR STAFF MANAGEMENT ---
     </script>
 </head>
 <body>
@@ -1030,23 +1135,23 @@ $result = $conn->query($sql);
                     <input type="text" id="registration_no" name="registration_no" value="<?php echo $next_registration_no; ?>" readonly>
                 </div>
                 <div class="form-group">
-                    <label>Staff ID</label>
+                    <label class="required-field">Staff ID</label>
                     <input type="text" id="staff_id" name="staff_id" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Username</label>
+                    <label class="required-field">Username</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label>Last Name</label>
+                    <label class="required-field">Last Name</label>
                     <input type="text" id="last_name" name="last_name" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>First Name</label>
+                    <label class="required-field">First Name</label>
                     <input type="text" id="first_name" name="first_name" required>
                 </div>
                 <div class="form-group">
@@ -1056,23 +1161,37 @@ $result = $conn->query($sql);
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <label class="required-field">Email</label>
+                    <input type="email" id="email" name="email" 
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
+                           title="Please enter a valid email address (e.g., user@example.com)"
+                           required>
+                    <small class="form-text text-muted" id="email-feedback">Enter a valid email address</small>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" placeholder="New Password (Leave blank to keep current)">
+                    <label for="password" class="required-field">Password:</label>
+                    <input type="password" id="password" name="password" 
+                           pattern="^(?=.*[A-Z])(?=.*\d).{8,}$" 
+                           minlength="8" 
+                           title="Password must be at least 8 characters long and contain at least one uppercase letter and one number"
+                           placeholder="New Password (Leave blank to keep current)">
+                    <small class="form-text text-muted">Password must be at least 8 characters with uppercase letter and number</small>
                 </div>
                 <div class="form-group">
-                    <label for="confirm_password">Confirm Password:</label>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm New Password">
+                    <label for="confirm_password" class="required-field">Confirm Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" 
+                           pattern="^(?=.*[A-Z])(?=.*\d).{8,}$" 
+                           minlength="8" 
+                           title="Password must be at least 8 characters long and contain at least one uppercase letter and one number"
+                           placeholder="Confirm New Password">
+                    <small class="form-text text-muted">Password must be at least 8 characters with uppercase letter and number</small>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Department</label>
+                    <label class="required-field">Department</label>
                     <select id="department" name="department" required onchange="updateOffices()">
                         <option value="">Select Department</option>
                         <?php foreach ($departments as $dept): ?>
@@ -1090,7 +1209,7 @@ $result = $conn->query($sql);
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Account Type</label>
+                    <label class="required-field">Account Type</label>
                     <select name="account_type" required>
                         <option value="">Select Account Type</option>
                         <option value="Staff">Staff</option>
