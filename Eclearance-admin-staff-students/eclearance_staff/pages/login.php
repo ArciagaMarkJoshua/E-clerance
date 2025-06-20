@@ -155,7 +155,7 @@ $conn->close();
         }
 
         .login-input {
-            width: 100%;
+            width: 80%;
             padding: 1rem 1.2rem;
             border: 2px solid #e0e0e0;
             border-radius: 12px;

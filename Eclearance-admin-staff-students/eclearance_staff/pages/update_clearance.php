@@ -19,7 +19,9 @@ $requirement_departments = [
     4 => 'Office of the Finance Director',
     5 => 'Office of the Registrar',
     6 => 'Property Custodian',
-    7 => 'Student Council'
+    7 => 'Student Council',
+    8 => 'Clinic',
+    9 => 'MOS'
 ];
 
 // Map departments to requirement IDs

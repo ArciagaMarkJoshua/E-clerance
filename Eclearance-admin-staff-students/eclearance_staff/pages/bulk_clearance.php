@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_csv'])) {
 
                     // Validate status
                     if (!in_array($status, ['Pending', 'Approved', 'Pending Approve'])) {
-                        $errors[] = "Row $row_count: Invalid status '{$status}' for student {$student_no}.";
+                        $errors[] = "Row $row_count: Invalid status '{$status}' for student {$student_no}. Allowed: Not Yet Cleared, Cleared.";
                         $error_count++;
                         error_log("Error: Invalid status '{$status}' for student $student_no.");
                         continue;

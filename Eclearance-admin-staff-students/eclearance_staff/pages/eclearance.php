@@ -155,16 +155,17 @@ if ($search) {
 }
 
 if ($clearance_status_filter) {
-    // If filtering by 'Cleared', consider 'Approved' status
     if ($clearance_status_filter === 'Cleared') {
         $query .= " AND scs.status = ?";
         $params[] = 'Approved';
+        $types .= "s";
+    } elseif ($clearance_status_filter === 'Not Yet Cleared') {
+        $query .= " AND (scs.status IS NULL OR scs.status = '' OR scs.status = 'Pending' OR scs.status = 'Pending Approve')";
     } else {
-        // For 'Pending' or 'Pending Approve', use the actual status
         $query .= " AND scs.status = ?";
         $params[] = $clearance_status_filter;
+        $types .= "s";
     }
-    $types .= "s";
 }
 
 $query .= " ORDER BY s.LastName, s.FirstName";
@@ -620,9 +621,8 @@ $levels = $levels_result->fetch_all(MYSQLI_ASSOC);
                     <label for="clearance_status">Clearance Status</label>
                     <select name="clearance_status" id="clearance_status">
                         <option value="">All Statuses</option>
-                        <option value="Pending" <?php echo (($_GET['clearance_status'] ?? '') === 'Pending') ? 'selected' : ''; ?>>Pending</option>
+                        <option value="Not Yet Cleared" <?php echo (($_GET['clearance_status'] ?? '') === 'Not Yet Cleared') ? 'selected' : ''; ?>>Not Yet Cleared</option>
                         <option value="Cleared" <?php echo (($_GET['clearance_status'] ?? '') === 'Cleared') ? 'selected' : ''; ?>>Cleared</option>
-                        <option value="Pending Approve" <?php echo (($_GET['clearance_status'] ?? '') === 'Pending Approve') ? 'selected' : ''; ?>>Pending Approve</option>
                     </select>
                 </div>
 
@@ -669,10 +669,14 @@ $levels = $levels_result->fetch_all(MYSQLI_ASSOC);
                             <td><?php echo htmlspecialchars($student['SectionCode']); ?></td>
                             <td>
                                 <?php 
-                                    if ($student['status'] === 'Approved') {
-                                        echo 'Cleared';
+                                    if (!empty($student['comments'])) {
+                                        echo htmlspecialchars($student['comments']);
                                     } else {
-                                        echo htmlspecialchars($student['comments'] ?? ($student['student_requirement_description'] ?? ($current_requirement_details['description'] ?? 'No outstanding requirements')));
+                                        if ($student['status'] === 'Approved') {
+                                            echo 'Cleared';
+                                        } else {
+                                            echo 'Not Yet Cleared';
+                                        }
                                     }
                                 ?>
                             </td>
@@ -681,7 +685,13 @@ $levels = $levels_result->fetch_all(MYSQLI_ASSOC);
                             </td>
                             <td>
                                 <span class="status-badge status-<?php echo strtolower($student['status']); ?>">
-                                    <?php echo $student['status']; ?>
+                                    <?php 
+                                        if ($student['status'] === 'Approved') {
+                                            echo 'Cleared';
+                                        } else {
+                                            echo 'Not Yet Cleared';
+                                        }
+                                    ?>
                                 </span>
                 </td>
                             <td>
@@ -718,9 +728,9 @@ $levels = $levels_result->fetch_all(MYSQLI_ASSOC);
                 <div class="form-group">
                     <label for="status">Status</label>
                     <select name="status" id="status" required>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Pending Approve">Pending Approve</option>
+                        <option value="Pending">Not Yet Cleared</option>
+                        <option value="Approved">Cleared</option>
+                        <option value="Pending Approve">Not Yet Cleared</option>
                     </select>
                 </div>
                 <div class="form-group">
