@@ -239,7 +239,7 @@ $clearanceStatus = $clearanceQuery->get_result();
                         <td>${row.requirement_name}</td>
                         <td>${row.general_description}</td>
                         <td>${row.student_description || 'No specific requirements'}</td>
-                        <td class="status-${row.status.toLowerCase()}">${row.status}</td>
+                        <td class="status-${row.status.toLowerCase()}">${row.status === 'Approved' ? 'Cleared' : row.status}</td>
                         <td>${row.approved_by || '-'}</td>
                         <td>${row.updated_at}</td>
                     `;

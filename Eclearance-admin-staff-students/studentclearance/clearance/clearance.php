@@ -83,7 +83,7 @@ $clearanceStatus = $clearanceQuery->get_result();
                                 <td><?php echo htmlspecialchars($row['requirement_name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['general_description']); ?></td>
                                 <td><?php echo htmlspecialchars($row['student_description'] ?? 'No specific requirements'); ?></td>
-                                <td class="status-<?php echo strtolower($row['status']); ?>"><?php echo $row['status']; ?></td>
+                                <td class="status-<?php echo strtolower($row['status']); ?>"><?php echo $row['status'] === 'Approved' ? 'Cleared' : $row['status']; ?></td>
                                 <td>
                                     <?php 
                                     if ($row['status'] === 'Approved') {
@@ -155,7 +155,7 @@ $clearanceStatus = $clearanceQuery->get_result();
                             <td>${row.requirement_name}</td>
                             <td>${row.general_description}</td>
                             <td>${row.student_description || 'No specific requirements'}</td>
-                            <td class="status-${row.status.toLowerCase()}">${row.status}</td>
+                            <td class="status-${row.status.toLowerCase()}">${row.status === 'Approved' ? 'Cleared' : row.status}</td>
                             <td>${row.status === 'Approved' ? (row.approved_by || (row.staff_firstname && row.staff_lastname ? 
                                 `${row.staff_firstname} ${row.staff_lastname}` : 'System Administrator')) : '-'}</td>
                             <td>${new Date(row.updated_at).toLocaleString()}</td>
